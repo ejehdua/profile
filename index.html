@@ -544,7 +544,7 @@
           // Scale base sizes slightly smaller to allow zoom expansion
           const MAIN_RADIUS = 220; 
           const SUB_RADIUS_OFFSET = 160; 
-          const LEVEL3_RADIUS_OFFSET = 140; // Extra distance for level 3
+          const LEVEL3_RADIUS_OFFSET = 80; // Extra distance for level 3
           const CENTER_SIZE = 120;
           const MAIN_NODE_SIZE = 90;
           const SUB_NODE_SIZE = 75;
@@ -629,7 +629,7 @@
                                 {/* Level 3: Children of Categories */}
                                 {sub.isCategory && isCatActive && sub.children && sub.children.map((child, k) => {
                                     const childCount = sub.children.length;
-                                    const childSpread = 100; // Wider spread for level 3
+                                    const childSpread = 70; // Wider spread for level 3
                                     // Base the angle on the Level 2 angle to continue outward
                                     const childStartAngle = subAngle - (childSpread / 2);
                                     const childStep = childCount > 1 ? childSpread / (childCount - 1) : 0;
