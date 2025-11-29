@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>פרופיל לומד והתאמות - מפוצל</title>
+    <title>פרופיל לומד והתאמות - מסונן</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -42,16 +42,6 @@
             top: var(--end-y);
             transform: translate(-50%, -50%) scale(1);
           }
-        }
-
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(249, 115, 22, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
-        }
-
-        .animate-pulse-ring {
-            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
 
         /* Cursor styles */
@@ -291,11 +281,11 @@
           }
         ];
 
-        // --- ADJUSTMENTS DATA (Interactive) ---
+        // --- ADJUSTMENTS DATA ---
         const adjustmentsData = [
             {
                 id: 'tools',
-                title: 'התאמה ברמה של כלי עזר',
+                title: 'כלי עזר',
                 icon: <Icons.Settings size={24} />,
                 color: 'from-gray-500 to-gray-700',
                 bgSolid: 'bg-gray-600',
@@ -311,7 +301,7 @@
             },
             {
                 id: 'insights',
-                title: 'תובנות והמלצות (הודעות קופצות)',
+                title: 'תובנות (הודעות קופצות)',
                 icon: <Icons.MessageSquare size={24} />,
                 color: 'from-yellow-500 to-yellow-700',
                 bgSolid: 'bg-yellow-600',
@@ -325,7 +315,7 @@
             },
             {
                 id: 'bot',
-                title: 'התאמות דרך עמית למידה (בוט דיאלוג)',
+                title: 'בוט דיאלוג',
                 icon: <Icons.Bot size={24} />,
                 color: 'from-purple-500 to-purple-700',
                 bgSolid: 'bg-purple-600',
@@ -340,7 +330,7 @@
             },
             {
                 id: 'component',
-                title: 'התאמות ברמת רכיב/בלוק',
+                title: 'רמת רכיב/בלוק',
                 icon: <Icons.Layers size={24} />,
                 color: 'from-blue-500 to-blue-700',
                 bgSolid: 'bg-blue-600',
@@ -355,7 +345,7 @@
             },
             {
                 id: 'path_level', 
-                title: 'התאמות ברמת מסלול',
+                title: 'רמת מסלול',
                 icon: <Icons.GitBranch size={24} />,
                 color: 'from-red-500 to-red-700',
                 bgSolid: 'bg-red-600',
@@ -369,7 +359,7 @@
             },
             {
                 id: 'human',
-                title: 'המלצות למורה או המנטור',
+                title: 'המלצות למורה',
                 icon: <Icons.Users size={24} />,
                 color: 'from-green-500 to-green-700',
                 bgSolid: 'bg-green-600',
@@ -382,6 +372,20 @@
                 ]
             }
         ];
+
+        // --- MAPPING CONFIGURATION ---
+        const domainToAdjustmentMap = {
+            'knowledge': ['path_level'],
+            'skills': ['component'],
+            'srl': ['insights', 'bot'],
+            'social_emotional': ['human', 'insights'],
+            'personal': ['tools', 'path_level'],
+            'identity': ['path_level'],
+            'cognitive': ['component', 'tools'],
+            'ems_data': ['human', 'path_level'],
+            'personality': ['human', 'bot'],
+            'self_beliefs': ['insights', 'bot']
+        };
 
         // --- MATH HELPERS ---
         const toRad = (deg) => (deg * Math.PI) / 180;
@@ -402,7 +406,7 @@
                   </button>
                 ))}
               </div>
-              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800" title="אפס תצוגה"><Icons.Compass size={18} /></button>
+              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800"><Icons.Compass size={18} /></button>
               <div className="px-2 py-1 bg-white/50 rounded text-[10px] text-gray-400 font-mono">{Math.round(scale * 100)}%</div>
             </div>
         );
@@ -418,9 +422,9 @@
           );
         };
 
-        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false, isHighlighted = false }) => {
+        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false }) => {
             const currentSize = expanded ? 320 : size;
-            const currentZ = expanded ? 100 : (isHighlighted ? 60 : 40);
+            const currentZ = expanded ? 100 : 40;
             
             const style = {
                 '--start-x': `${pos.x}px`, '--start-y': `${pos.y}px`, '--end-x': `${pos.x}px`, '--end-y': `${pos.y}px`,
@@ -431,7 +435,6 @@
                 <button onClick={onClick} style={style}
                     className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center transition-size cursor-pointer
                                 ${expanded ? 'bg-white ring-4 ring-offset-2 ring-blue-100 shadow-2xl' : 'hover:border-blue-400 hover:scale-105 animate-flyOut forwards'}
-                                ${isHighlighted && !expanded ? 'ring-4 ring-orange-400 animate-pulse-ring' : ''}
                                 ${(!expanded && isCategory) ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'} `}>
                     {!expanded ? (
                         <>
@@ -474,13 +477,12 @@
             );
         };
 
-        // --- SUB-COMPONENTS FOR EACH SYSTEM ---
+        // --- SUB-COMPONENTS ---
 
         const ProfileSystem = ({ width, height, activeDomainId, onDomainSelect, stageFilter, filteredData }) => {
             const [activeCategoryId, setActiveCategoryId] = useState(null); 
             const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
             
-            // Clear sub-selections when main domain changes
             useEffect(() => {
                 setActiveCategoryId(null);
                 setSelectedSubDomainId(null);
@@ -570,10 +572,9 @@
             );
         };
 
-        const AdjustmentSystem = ({ width, height, highlightedAdjustmentId }) => {
+        const AdjustmentSystem = ({ width, height, activeDomainId }) => {
             const [activeAdjustmentId, setActiveAdjustmentId] = useState(null);
             const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
-            const [showDescription, setShowDescription] = useState(false);
 
             const centerX = width / 2;
             const centerY = height / 2;
@@ -583,22 +584,20 @@
             const MAIN_NODE_SIZE = 80;
             const SUB_NODE_SIZE = 65;
 
-            // Handle highlight changes
-            useEffect(() => {
-                if (highlightedAdjustmentId === 'path_level') {
-                    // Optional: You can auto-open or just highlight. User asked to "show relevant", highlighting is good.
-                } else {
-                    setShowDescription(false);
-                }
-            }, [highlightedAdjustmentId]);
+            // Derived relevant adjustments
+            const relevantIds = useMemo(() => {
+                return activeDomainId ? (domainToAdjustmentMap[activeDomainId] || []) : [];
+            }, [activeDomainId]);
+
+            // Filter adjustments to show
+            const visibleAdjustments = useMemo(() => {
+                if (!activeDomainId) return adjustmentsData; // Show all if nothing selected
+                return adjustmentsData.filter(adj => relevantIds.includes(adj.id));
+            }, [relevantIds, activeDomainId]);
 
             const handleAdjustmentClick = (adjId) => {
                 setActiveAdjustmentId(prev => prev === adjId ? null : adjId);
                 setSelectedSubDomainId(null);
-                
-                if (adjId === 'path_level' && highlightedAdjustmentId === 'path_level') {
-                    setShowDescription(!showDescription);
-                }
             };
 
             return (
@@ -606,25 +605,23 @@
                     <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-100 text-slate-800"
                          style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: centerX, top: centerY, transform: 'translate(-50%, -50%)' }}>
                        <Icons.Settings size={30} className="text-gray-400 mb-1 opacity-50"/>
-                       <h2 className="font-extrabold text-center leading-none text-sm">מערכת<br/>התאמות</h2>
+                       <h2 className="font-extrabold text-center leading-none text-sm">התאמות</h2>
                     </div>
 
-                    {adjustmentsData.map((adj, i) => {
-                        const angleDeg = (360 / adjustmentsData.length) * i - 90;
+                    {visibleAdjustments.map((adj, i) => {
+                        const angleDeg = (360 / visibleAdjustments.length) * i - 90;
                         const pos = calculatePosition(angleDeg, MAIN_RADIUS, centerX, centerY);
-                        const isHighlighted = highlightedAdjustmentId === adj.id;
                         const isActive = activeAdjustmentId === adj.id;
 
                         return (
                             <React.Fragment key={adj.id}>
-                                <Line x1={centerX} y1={centerY} x2={pos.x} y2={pos.y} isActive={isActive || isHighlighted} />
+                                <Line x1={centerX} y1={centerY} x2={pos.x} y2={pos.y} isActive={isActive} />
                                 <NodeButton 
                                     title={adj.title} 
                                     metrics="" source="" 
                                     colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
                                     onClick={(e) => { e.stopPropagation(); handleAdjustmentClick(adj.id); }}
                                     pos={pos} size={MAIN_NODE_SIZE} delay={i * 50} isCategory={false} expanded={false}
-                                    isHighlighted={isHighlighted}
                                 />
                                 
                                 {isActive && adj.subDomains.map((sub, j) => {
@@ -651,21 +648,6 @@
                             </React.Fragment>
                         );
                     })}
-
-                    {showDescription && (
-                        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-sm bg-white/95 backdrop-blur-md border-t-4 border-orange-500 rounded-lg shadow-2xl p-4 z-[100] animate-fadeIn text-right">
-                            <button onClick={() => setShowDescription(false)} className="absolute top-2 left-2 text-gray-400 hover:text-gray-600"><Icons.X size={20}/></button>
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-2 text-orange-600 font-bold">
-                                    <Icons.GitBranch size={20}/>
-                                    <h3 className="text-sm">התאמת מסלול לידע</h3>
-                                </div>
-                                <p className="text-gray-600 text-xs leading-relaxed">
-                                    זיהוי רמת הידע (בסיס/העמקה) מאפשר למערכת להתאים אוטומטית את דרגת הקושי והתיווך במסלול הלמידה.
-                                </p>
-                            </div>
-                        </div>
-                    )}
                 </>
             );
         }
@@ -675,25 +657,7 @@
           const adjustmentsZoomRef = useRef(null);
           const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
           const [activeDomainId, setActiveDomainId] = useState(null);
-          const [highlightedAdjustmentId, setHighlightedAdjustmentId] = useState(null);
           const [stageFilter, setStageFilter] = useState(0); 
-
-          useEffect(() => {
-              // Mapping logic
-              if (activeDomainId === 'knowledge') {
-                  setHighlightedAdjustmentId('path_level');
-              } else if (activeDomainId === 'srl') {
-                  setHighlightedAdjustmentId('insights');
-              } else if (activeDomainId === 'personal') {
-                  setHighlightedAdjustmentId('tools');
-              } else if (activeDomainId === 'social_emotional') {
-                  setHighlightedAdjustmentId('human');
-              } else if (activeDomainId === 'skills') {
-                  setHighlightedAdjustmentId('component');
-              } else {
-                  setHighlightedAdjustmentId(null);
-              }
-          }, [activeDomainId]);
 
           const filteredData = useMemo(() => {
             return profileData.map(domain => {
@@ -723,7 +687,7 @@
           return (
             <div className="h-full w-full bg-slate-50 flex flex-col font-sans overflow-hidden text-right" dir="rtl">
               <header className="bg-white/90 backdrop-blur-sm shadow-sm p-3 z-50 relative border-b border-gray-100 flex-shrink-0 flex items-center justify-between px-6">
-                <h1 className="text-lg font-bold text-gray-800">פרופיל לומד ומערכת התאמות</h1>
+                <h1 className="text-lg font-bold text-gray-800">פרופיל לומד והתאמות</h1>
                 <Controls activeFilter={stageFilter} onFilterChange={setStageFilter} onReset={handleReset} scale={1} />
               </header>
 
@@ -748,13 +712,13 @@
 
                   {/* --- LEFT SIDE: ADJUSTMENTS (50%) --- */}
                   <div className="w-1/2 h-full relative bg-slate-50">
-                      <div className="absolute top-2 left-2 z-10 bg-orange-50 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold">מערכת התאמות</div>
+                      <div className="absolute top-2 left-2 z-10 bg-orange-50 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold">התאמות</div>
                       <PanZoomWrapper onResetRef={adjustmentsZoomRef}>
                           {(scale) => (
                               <AdjustmentSystem 
                                   width={dimensions.width / 2} 
                                   height={dimensions.height} 
-                                  highlightedAdjustmentId={highlightedAdjustmentId}
+                                  activeDomainId={activeDomainId}
                               />
                           )}
                       </PanZoomWrapper>
