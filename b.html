@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרופיל לומד והתאמות</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (for JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap');
+        
+        body { font-family: 'Heebo', sans-serif; user-select: none; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        
+        /* Fly Out Animation */
+        .animate-flyOut {
+          animation: flyOut 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+          opacity: 0;
+          left: var(--start-x);
+          top: var(--start-y);
+          transform: translate(-50%, -50%) scale(0.2);
+        }
+
+        @keyframes flyOut {
+          to {
+            opacity: 1;
+            left: var(--end-x);
+            top: var(--end-y);
+            transform: translate(-50%, -50%) scale(1);
+          }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.7); }
+            70% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 20px rgba(234, 88, 12, 0); }
+            100% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
+        }
+
+        .animate-pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Cursor styles */
+        .cursor-grab { cursor: grab; }
+        .cursor-grabbing { cursor: grabbing; }
+        
+        /* Smooth sizing transition */
+        .transition-size {
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 h-screen w-screen overflow-hidden">
+    <div id="root" class="h-full w-full"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } = React;
+
+        // --- ICONS ---
+        const IconBase = ({ size = 24, children, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+
+        const Icons = {
+            User: (p) => <IconBase {...p}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></IconBase>,
+            BookOpen: (p) => <IconBase {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></IconBase>,
+            Brain: (p) => <IconBase {...p}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></IconBase>,
+            Heart: (p) => <IconBase {...p}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></IconBase>,
+            Activity: (p) => <IconBase {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></IconBase>,
+            Target: (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></IconBase>,
+            Compass: (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></IconBase>,
+            Zap: (p) => <IconBase {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></IconBase>,
+            Sparkles: (p) => <IconBase {...p}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5h4"/><path d="M3 7.502h4"/><path d="M7 3.502v4"/></IconBase>,
+            X: (p) => <IconBase {...p}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></IconBase>,
+            Database: (p) => <IconBase {...p}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></IconBase>,
+            Info: (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></IconBase>,
+            FileText: (p) => <IconBase {...p}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IconBase>,
+            Settings: (p) => <IconBase {...p}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></IconBase>,
+            MessageSquare: (p) => <IconBase {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></IconBase>,
+            Bot: (p) => <IconBase {...p}><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></IconBase>,
+            Layers: (p) => <IconBase {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></IconBase>,
+            GitBranch: (p) => <IconBase {...p}><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></IconBase>
+        };
+
+        // --- PROFILE DATA (Existing) ---
+        const profileData = [
+          {
+            id: 'personal',
+            title: 'נתונים אישיים',
+            icon: <Icons.User size={24} />,
+            color: 'from-blue-400 to-blue-600',
+            bgSolid: 'bg-blue-500',
+            bgColor: 'bg-blue-100',
+            textColor: 'text-blue-800',
+            subDomains: [
+              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי, מצב סוציואקונומי', source: 'נתוני בית ספר', stage: 1 },
+              { title: 'תחומי עניין', metrics: 'תחביבים, תחומי עניין אישיים, כישורים מיוחדים', source: 'דיווח עצמי', stage: 1 },
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות', source: 'נתוני בית ספר', stage: 2 }
+            ]
+          },
+          {
+            id: 'knowledge',
+            title: 'ידע',
+            icon: <Icons.BookOpen size={24} />,
+            color: 'from-emerald-400 to-emerald-600',
+            bgSolid: 'bg-emerald-500',
+            bgColor: 'bg-emerald-100',
+            textColor: 'text-emerald-800',
+            subDomains: [
+              { title: 'רמת שליטה בידע', metrics: 'ידע עולם, ידע קודם רלוונטי', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמודדות עם קושי', metrics: 'התמודדות עם רמת קושי של שאלה', source: 'נתוני למידה', stage: 1 },
+              { title: 'רמת חשיבה', metrics: 'רמת חשיבה (זכירה, הבנה, יישום, אנליזה)', source: 'נתוני למידה', stage: 1 }
+            ]
+          },
+          {
+            id: 'skills',
+            title: 'מיומנויות',
+            icon: <Icons.Zap size={24} />,
+            color: 'from-rose-400 to-rose-600',
+            bgSolid: 'bg-rose-500',
+            bgColor: 'bg-rose-100',
+            textColor: 'text-rose-800',
+            subDomains: [
+              {
+                id: 'skills_social',
+                title: 'חברתיות-רגשיות',
+                isCategory: true,
+                stage: 2, 
+                children: [
+                  { title: 'מיומנויות חברתיות', metrics: 'תקשורת, שיתוף פעולה, מודעות חברתית', source: 'דיווח מורה (DESSA)', stage: 2 },
+                  { title: 'מיומנויות רגשיות', metrics: 'מודעות עצמית, הכוונה עצמית', source: 'דיווח מורה (DESSA)', stage: 2 },
+                  { title: 'מיומנויות תפקודיות', metrics: 'ניהול עצמי, חוסן, קבלת החלטות', source: 'דיווח מורה (DESSA)', stage: 2 }
+                ]
+              },
+              {
+                id: 'skills_literacy',
+                title: 'אורייניות',
+                isCategory: true,
+                stage: 2,
+                children: [
+                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות, הבעה', source: 'נתוני למידה', stage: 2 },
+                  { title: 'חשיבה ביקורתית', metrics: 'טיעון', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול, שיתופיות, תוכן דיגיטלי', source: 'נתוני למידה', stage: 2 }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'srl',
+            title: 'SRL',
+            icon: <Icons.Activity size={24} />,
+            color: 'from-amber-400 to-amber-600',
+            bgSolid: 'bg-amber-500',
+            bgColor: 'bg-amber-100',
+            textColor: 'text-amber-800',
+            subDomains: [
+              { title: 'מעורבות', metrics: 'השתתפות בפעילויות ודיונים', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמדה', metrics: 'נוכחות, מאמץ, גריט', source: 'Grit-S', stage: 1 },
+              { title: 'סדירות', metrics: 'זמני למידה, מניעת דחיינות', source: 'MSLQ', stage: 1 }
+            ]
+          },
+          {
+            id: 'identity',
+            title: 'מסע זהות',
+            icon: <Icons.Compass size={24} />,
+            color: 'from-indigo-400 to-indigo-600',
+            bgSolid: 'bg-indigo-500',
+            bgColor: 'bg-indigo-100',
+            textColor: 'text-indigo-800',
+            subDomains: [
+              { title: 'ערכים', metrics: 'בהירות, הזדהות ומימוש ערכים', source: '', stage: 2 },
+              { title: 'זהות אישית', metrics: '', source: '', stage: 2 }
+            ]
+          },
+          {
+            id: 'social_emotional',
+            title: 'רגשי-חברתי',
+            icon: <Icons.Heart size={24} />,
+            color: 'from-orange-400 to-orange-600',
+            bgSolid: 'bg-orange-500',
+            bgColor: 'bg-orange-100',
+            textColor: 'text-orange-800',
+            subDomains: [
+              { title: 'רגש', metrics: 'חיוביות, אופטימיות, שעמום', source: 'PANAS-C', stage: 2 },
+              { title: 'לחץ וחרדה', metrics: 'לחץ לימודי, חרדת בחינות', source: 'MAS-12', stage: 2 }
+            ]
+          }
+        ];
+
+        // --- ADJUSTMENTS DATA (New System) ---
+        const adjustmentsData = [
+            {
+                id: 'tools',
+                title: 'כלי עזר',
+                icon: <Icons.Settings size={24} />,
+                color: 'from-gray-500 to-gray-700',
+                bgSolid: 'bg-gray-600',
+                textColor: 'text-gray-800',
+                subDomains: [
+                    { title: 'מילון / מילה חמה', metrics: 'תמיכה בשפה' },
+                    { title: 'הקראה / מקראה', metrics: 'נגישות שמיעתית' },
+                    { title: 'רמזים', metrics: 'תמיכה בפתרון' }
+                ]
+            },
+            {
+                id: 'insights',
+                title: 'תובנות (Popups)',
+                icon: <Icons.MessageSquare size={24} />,
+                color: 'from-yellow-500 to-yellow-700',
+                bgSolid: 'bg-yellow-600',
+                textColor: 'text-yellow-900',
+                subDomains: [
+                    { title: 'הצעה להפסקה', metrics: 'ניהול עומס' },
+                    { title: 'הצעה לפיגום', metrics: 'תמיכה בקשיים' },
+                    { title: 'לימוד אסטרטגיה', metrics: 'מיומנות חסרה' }
+                ]
+            },
+            {
+                id: 'bot',
+                title: 'בוט דיאלוג',
+                icon: <Icons.Bot size={24} />,
+                color: 'from-purple-500 to-purple-700',
+                bgSolid: 'bg-purple-600',
+                textColor: 'text-purple-900',
+                subDomains: [
+                    { title: 'שאלה מכוונת', metrics: 'בירור הבנה' },
+                    { title: 'סיוע בטעות', metrics: 'ניתוח שגיאה' },
+                    { title: 'הרחבת ידע', metrics: 'העמקה' }
+                ]
+            },
+            {
+                id: 'component',
+                title: 'רמת רכיב',
+                icon: <Icons.Layers size={24} />,
+                color: 'from-blue-500 to-blue-700',
+                bgSolid: 'bg-blue-600',
+                textColor: 'text-blue-900',
+                subDomains: [
+                    { title: 'דרגות קושי', metrics: 'וריאציות קושי' },
+                    { title: 'ייצוגים שונים', metrics: 'טקסט/וידאו/אודיו' },
+                    { title: 'אורך תוכן', metrics: 'קצר/מלא' }
+                ]
+            },
+            {
+                id: 'path_level', // Key ID for interaction
+                title: 'רמת מסלול',
+                icon: <Icons.GitBranch size={24} />,
+                color: 'from-red-500 to-red-700',
+                bgSolid: 'bg-red-600',
+                textColor: 'text-red-900',
+                subDomains: [
+                    { title: 'לפי תחומי עניין', metrics: 'פרסונליזציה' },
+                    { title: 'לפי רמת שליטה', metrics: 'בסיס/קידום/העמקה' },
+                    { title: 'לפי סגנון מדיה', metrics: 'העדפות למידה' }
+                ]
+            },
+            {
+                id: 'human',
+                title: 'המלצות מורה',
+                icon: <Icons.Users size={24} />,
+                color: 'from-green-500 to-green-700',
+                bgSolid: 'bg-green-600',
+                textColor: 'text-green-900',
+                subDomains: [
+                    { title: 'למידת עמיתים', metrics: 'שידוך חבר' },
+                    { title: 'למידה מונחית', metrics: 'תיווך אנושי' },
+                    { title: 'קבוצות למידה', metrics: 'מבנה קבוצה' }
+                ]
+            }
+        ];
+
+        // --- MATH HELPERS ---
+        const toRad = (deg) => (deg * Math.PI) / 180;
+        const calculatePosition = (angleDeg, radius, centerX, centerY) => ({
+            x: centerX + Math.cos(toRad(angleDeg)) * radius,
+            y: centerY + Math.sin(toRad(angleDeg)) * radius
+        });
+
+        // --- COMPONENTS ---
+
+        const Controls = ({ activeFilter, onFilterChange, onReset, scale }) => (
+            <div className="flex gap-2 items-center">
+              <div className="flex bg-white/90 backdrop-blur p-1 rounded-lg shadow-sm border border-gray-200 gap-1">
+                {[ {l:'הכל',v:0}, {l:'שלב הטמעה ראשוני',v:1} ].map((opt) => (
+                  <button key={opt.v} onClick={() => onFilterChange(opt.v)}
+                    className={`px-3 py-1 rounded-md text-xs font-bold transition-all duration-200 ${activeFilter === opt.v ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-500 hover:bg-gray-100'}`}>
+                    {opt.l}
+                  </button>
+                ))}
+              </div>
+              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800"><Icons.Compass size={18} /></button>
+              <div className="px-2 py-1 bg-white/50 rounded text-[10px] text-gray-400 font-mono">{Math.round(scale * 100)}%</div>
+            </div>
+        );
+
+        const Line = ({ x1, y1, x2, y2, isActive, isDashed = false }) => {
+          const dx = x2 - x1, dy = y2 - y1;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+          return (
+            <div className="absolute z-0 pointer-events-none origin-left"
+              style={{ top: y1, left: x1, width: `${dist}px`, height: isDashed ? '0' : '2px', borderTop: isDashed ? '2px dashed #cbd5e1' : 'none', backgroundColor: isDashed ? 'transparent' : (isActive ? '#94a3b8' : '#e2e8f0'), transform: `rotate(${angle}deg)`, opacity: isActive ? 1 : 0.6, transition: 'opacity 0.5s' }}
+            />
+          );
+        };
+
+        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false, isHighlighted = false }) => {
+            const currentSize = expanded ? 320 : size;
+            const currentZ = expanded ? 100 : (isHighlighted ? 60 : 40);
+            
+            const style = {
+                '--start-x': `${pos.x}px`, '--start-y': `${pos.y}px`, '--end-x': `${pos.x}px`, '--end-y': `${pos.y}px`,
+                width: currentSize, height: currentSize, left: pos.x, top: pos.y, zIndex: currentZ, animationDelay: `${delay}ms`
+            };
+
+            return (
+                <button onClick={onClick} style={style}
+                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center transition-size cursor-pointer
+                                ${expanded ? 'bg-white ring-4 ring-offset-2 ring-blue-100 shadow-2xl' : 'hover:border-blue-400 hover:scale-105 animate-flyOut forwards'}
+                                ${isHighlighted && !expanded ? 'ring-4 ring-orange-400 animate-pulse-ring' : ''}
+                                ${(!expanded && isCategory) ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'} `}>
+                    {!expanded ? (
+                        <>
+                            <span className={`font-bold text-center leading-tight ${textColor} line-clamp-3 px-2`} style={{ fontSize: size * 0.14 }}>{title}</span>
+                            <div className={`mt-1 h-0.5 w-3 rounded-full ${bgSolid} opacity-30`}></div>
+                            {isCategory && <div className="absolute -bottom-1 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>}
+                        </>
+                    ) : (
+                        <div className="flex flex-col w-full h-full p-6 text-center items-center justify-center relative animate-fadeIn">
+                            <button className="absolute top-2 left-3 p-2 text-gray-400 hover:text-gray-600 transition-colors"><Icons.X size={20} /></button>
+                            <div className="flex-shrink-0 mb-4 pb-2 border-b-2 border-blue-500 w-2/3"><h3 className={`text-xl font-bold ${textColor}`}>{title}</h3></div>
+                            <div className="flex-1 overflow-y-auto custom-scrollbar w-full px-2">
+                                {metrics && <div className="mb-4"><div className="flex items-center justify-center gap-2 mb-1 text-gray-500 font-bold text-xs"><Icons.Activity size={14} /><span>מדדים</span></div><p className="text-gray-700 text-sm leading-relaxed bg-slate-50 p-2 rounded">{metrics}</p></div>}
+                                {source && <div><div className="flex items-center justify-center gap-2 mb-1 text-gray-400 font-bold text-[10px] uppercase"><Icons.Database size={12} /><span>מקור נתונים</span></div><div className="flex items-center justify-center"><div className={`h-3 w-1 ${bgSolid} rounded-full ml-2 opacity-50`}></div><p className="text-gray-500 text-xs">{source}</p></div></div>}
+                            </div>
+                        </div>
+                    )}
+                </button>
+            );
+        };
+
+        const PanZoomWrapper = ({ children, onResetRef }) => {
+            const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
+            const [isDragging, setIsDragging] = useState(false);
+            const startPan = useRef({ x: 0, y: 0 });
+            const containerRef = useRef(null);
+
+            useEffect(() => { if (onResetRef) onResetRef.current = () => setTransform({ x: 0, y: 0, scale: 1 }); }, [onResetRef]);
+
+            const handleMouseDown = (e) => { if (e.button !== 0) return; setIsDragging(true); startPan.current = { x: e.clientX - transform.x, y: e.clientY - transform.y }; };
+            const handleMouseMove = (e) => { if (!isDragging) return; e.preventDefault(); setTransform(prev => ({ ...prev, x: e.clientX - startPan.current.x, y: e.clientY - startPan.current.y })); };
+            const handleMouseUp = () => setIsDragging(false);
+            const handleWheel = (e) => { const s = -e.deltaY * 0.001; setTransform(prev => ({ ...prev, scale: Math.min(Math.max(0.4, transform.scale * (1 + s)), 3) })); };
+
+            return (
+                <div ref={containerRef} className={`w-full h-full overflow-hidden relative bg-slate-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                    onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} onWheel={handleWheel}>
+                    <div style={{ transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`, transformOrigin: 'center', width: '100%', height: '100%' }}>{children(transform.scale)}</div>
+                </div>
+            );
+        };
+
+        const App = () => {
+          const resetZoomRef = useRef(null);
+          const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+          
+          // State for Left System (Profile)
+          const [activeDomainId, setActiveDomainId] = useState(null);
+          const [activeCategoryId, setActiveCategoryId] = useState(null); 
+          const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
+          
+          // State for Right System (Adjustments)
+          const [highlightedAdjustmentId, setHighlightedAdjustmentId] = useState(null); // Which node to "Light up"
+          const [showDescription, setShowDescription] = useState(false); // Show bottom box?
+
+          const [stageFilter, setStageFilter] = useState(0); 
+
+          // Interaction Logic: Map Profile Selection to Adjustment Highlight
+          useEffect(() => {
+              if (activeDomainId === 'knowledge') {
+                  setHighlightedAdjustmentId('path_level'); // Light up "Path Level"
+              } else {
+                  setHighlightedAdjustmentId(null);
+                  setShowDescription(false);
+              }
+          }, [activeDomainId]);
+
+          const filteredData = useMemo(() => {
+            return profileData.map(domain => {
+                const visibleSubs = domain.subDomains.filter(sub => {
+                    const selfMatch = stageFilter === 0 || sub.stage === 1;
+                    const childrenMatch = sub.children && sub.children.some(c => stageFilter === 0 || c.stage === 1);
+                    return selfMatch || childrenMatch;
+                }).map(sub => {
+                    if (sub.children) return { ...sub, children: sub.children.filter(c => stageFilter === 0 || c.stage === 1) };
+                    return sub;
+                });
+                return { ...domain, subDomains: visibleSubs };
+            }).filter(d => d.subDomains.length > 0);
+          }, [stageFilter]);
+
+          useLayoutEffect(() => {
+            const up = () => setDimensions({ width: window.innerWidth, height: window.innerHeight });
+            window.addEventListener('resize', up); up(); return () => window.removeEventListener('resize', up);
+          }, []);
+
+          // Geometry Constants
+          const minDim = Math.min(dimensions.width, dimensions.height);
+          
+          // --- Center Points ---
+          // Use responsive math to separate the two systems comfortably
+          const leftCenterX = dimensions.width < 1000 ? dimensions.width / 2 : dimensions.width * 0.35;
+          const leftCenterY = dimensions.height / 2;
+          
+          const rightCenterX = dimensions.width < 1000 ? dimensions.width / 2 + 800 : dimensions.width * 0.75; // Far away on mobile so you pan to it, or side-by-side on desktop
+          const rightCenterY = dimensions.height / 2;
+
+          // Node Sizes
+          const MAIN_RADIUS = 200; 
+          const SUB_RADIUS_OFFSET = 140; 
+          const CENTER_SIZE = 110;
+          const MAIN_NODE_SIZE = 80;
+          const SUB_NODE_SIZE = 65;
+
+          const handleAdjustmentClick = (adjId) => {
+              // Specific logic: Only if Path Level is clicked AND it is currently highlighted
+              if (adjId === 'path_level' && highlightedAdjustmentId === 'path_level') {
+                  setShowDescription(!showDescription);
+              }
+          };
+
+          return (
+            <div className="h-full w-full bg-slate-50 flex flex-col font-sans overflow-hidden text-right" dir="rtl">
+              <header className="bg-white/90 backdrop-blur-sm shadow-sm p-3 z-50 relative border-b border-gray-100 flex-shrink-0 flex items-center justify-between px-6">
+                <h1 className="text-lg font-bold text-gray-800">פרופיל לומד ומערכת התאמות</h1>
+                <Controls activeFilter={stageFilter} onFilterChange={setStageFilter} onReset={() => resetZoomRef.current && resetZoomRef.current()} scale={1} />
+              </header>
+
+              <main className="flex-1 relative overflow-hidden w-full h-full">
+                <PanZoomWrapper onResetRef={resetZoomRef}>
+                 {(scale) => (
+                  <>
+                    {/* --- SYSTEM 1: LEARNER PROFILE (LEFT) --- */}
+                    
+                    {/* Background Aura */}
+                    <div className="absolute rounded-full blur-[80px] opacity-20 pointer-events-none transition-colors duration-1000"
+                         style={{ width: '600px', height: '600px', left: leftCenterX, top: leftCenterY, transform: 'translate(-50%, -50%)', backgroundColor: activeDomainId ? '#dbeafe' : '#f1f5f9' }}>
+                    </div>
+
+                    {/* Center Node */}
+                    <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-50 text-slate-800 cursor-pointer hover:shadow-xl transition-all duration-300"
+                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: leftCenterX, top: leftCenterY, transform: 'translate(-50%, -50%)' }}
+                         onClick={(e) => { e.stopPropagation(); setActiveDomainId(null); }}>
+                       <Icons.User size={30} className="text-slate-400 mb-1 opacity-50"/>
+                       <h2 className="font-extrabold text-center leading-none text-sm">פרופיל<br/>לומד</h2>
+                    </div>
+
+                    {filteredData.map((domain, i) => {
+                      const angleDeg = (360 / filteredData.length) * i - 90;
+                      const pos = calculatePosition(angleDeg, MAIN_RADIUS, leftCenterX, leftCenterY);
+                      const isActive = activeDomainId === domain.id;
+
+                      return (
+                        <React.Fragment key={domain.id}>
+                          <Line x1={leftCenterX} y1={leftCenterY} x2={pos.x} y2={pos.y} isActive={isActive} />
+                          <button onClick={(e) => { e.stopPropagation(); setActiveDomainId(isActive ? null : domain.id); setActiveCategoryId(null); setSelectedSubDomainId(null); }}
+                            className={`absolute rounded-full shadow-md flex flex-col items-center justify-center text-center transition-all duration-500 z-30 border-2 border-white group outline-none bg-gradient-to-br ${domain.color} text-white ${isActive ? 'scale-110 ring-4 ring-offset-2 ring-blue-50' : 'hover:scale-105 opacity-90'}`}
+                            style={{ width: MAIN_NODE_SIZE, height: MAIN_NODE_SIZE, left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)' }}>
+                            <div className="mb-0.5 opacity-95">{React.cloneElement(domain.icon, { size: 18 })}</div>
+                            <span className="font-bold px-1 line-clamp-2 text-[10px]">{domain.title}</span>
+                          </button>
+
+                          {isActive && domain.subDomains.map((sub, j) => {
+                            const spread = 80, startAngle = angleDeg - (spread / 2);
+                            const step = domain.subDomains.length > 1 ? spread / (domain.subDomains.length - 1) : 0;
+                            const subAngle = domain.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
+                            const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, leftCenterX, leftCenterY);
+                            const isCatActive = activeCategoryId === sub.id;
+                            const isExpanded = selectedSubDomainId === sub.title;
+
+                            return (
+                              <React.Fragment key={j}>
+                                <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
+                                <NodeButton title={sub.title} metrics={sub.metrics} source={sub.source} colorClass={domain.color} textColor={domain.textColor} bgSolid={domain.bgSolid}
+                                    onClick={(e) => { e.stopPropagation(); sub.isCategory ? setActiveCategoryId(isCatActive ? null : sub.id) : setSelectedSubDomainId(isExpanded ? null : sub.title); }}
+                                    pos={subPos} size={SUB_NODE_SIZE} delay={j * 50} isCategory={sub.isCategory} expanded={isExpanded} />
+                                
+                                {sub.isCategory && isCatActive && sub.children && sub.children.map((child, k) => {
+                                    const cSpread = 70, cStart = subAngle - (cSpread/2), cStep = sub.children.length > 1 ? cSpread/(sub.children.length-1) : 0;
+                                    const cAngle = sub.children.length === 1 ? subAngle : cStart + (cStep * k);
+                                    const cPos = calculatePosition(cAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET + 80, leftCenterX, leftCenterY);
+                                    const isChildExpanded = selectedSubDomainId === child.title;
+                                    return (
+                                        <React.Fragment key={k}>
+                                            <Line x1={subPos.x} y1={subPos.y} x2={cPos.x} y2={cPos.y} isActive={true} isDashed={true} />
+                                            <NodeButton title={child.title} metrics={child.metrics} source={child.source} colorClass={domain.color} textColor={domain.textColor} bgSolid={domain.bgSolid}
+                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomainId(isChildExpanded ? null : child.title); }}
+                                                pos={cPos} size={65} delay={k * 50} expanded={isChildExpanded} />
+                                        </React.Fragment>
+                                    );
+                                })}
+                              </React.Fragment>
+                            );
+                          })}
+                        </React.Fragment>
+                      );
+                    })}
+
+                    {/* --- SYSTEM 2: ADJUSTMENTS (RIGHT) --- */}
+                    
+                    {/* Adjustments Center */}
+                    <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-100 text-slate-800"
+                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: rightCenterX, top: rightCenterY, transform: 'translate(-50%, -50%)' }}>
+                       <Icons.Settings size={30} className="text-gray-400 mb-1 opacity-50"/>
+                       <h2 className="font-extrabold text-center leading-none text-sm">מערכת<br/>התאמות</h2>
+                    </div>
+
+                    {adjustmentsData.map((adj, i) => {
+                        const angleDeg = (360 / adjustmentsData.length) * i - 90;
+                        const pos = calculatePosition(angleDeg, MAIN_RADIUS, rightCenterX, rightCenterY);
+                        const isHighlighted = highlightedAdjustmentId === adj.id;
+
+                        return (
+                            <React.Fragment key={adj.id}>
+                                <Line x1={rightCenterX} y1={rightCenterY} x2={pos.x} y2={pos.y} isActive={true} />
+                                <NodeButton 
+                                    title={adj.title} 
+                                    metrics="" source="" 
+                                    colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
+                                    onClick={(e) => { e.stopPropagation(); handleAdjustmentClick(adj.id); }}
+                                    pos={pos} size={MAIN_NODE_SIZE} delay={i * 50} isCategory={false} expanded={false}
+                                    isHighlighted={isHighlighted}
+                                />
+                                {isHighlighted && <div className="absolute text-xs font-bold text-orange-600 bg-white px-2 py-1 rounded shadow-sm animate-bounce" style={{ left: pos.x, top: pos.y - 60, transform: 'translateX(-50%)' }}>לחץ עליי!</div>}
+                            </React.Fragment>
+                        );
+                    })}
+
+                  </>
+                 )}
+                </PanZoomWrapper>
+
+                {/* --- DESCRIPTION BOX (Fixed Bottom) --- */}
+                {showDescription && (
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-2xl bg-white/95 backdrop-blur-md border-t-4 border-orange-500 rounded-lg shadow-2xl p-6 z-[100] animate-fadeIn">
+                        <button onClick={() => setShowDescription(false)} className="absolute top-2 left-2 text-gray-400 hover:text-gray-600"><Icons.X size={20}/></button>
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 bg-orange-100 text-orange-600 rounded-full"><Icons.GitBranch size={32}/></div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800 mb-2">השפעת רמת הידע על מסלול הלמידה</h3>
+                                <p className="text-gray-600 leading-relaxed">
+                                    כאשר המערכת מזהה רמת שליטה ספציפית בידע (בסיס, קידום או העמקה), היא מבצעת <strong>התאמה ברמת מסלול</strong>. 
+                                    ההתאמה מתבטאת בשינוי דרגות הקושי של המשימות: תלמיד המפגין שליטה בסיסית יקבל מסלול מדורג עם יותר תיווך, בעוד שתלמיד בשלב העמקה יקבל אתגרים מורכבים יותר הדורשים יישום ואנליזה.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+              </main>
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
