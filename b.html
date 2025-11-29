@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>פרופיל לומד והתאמות - אינטראקטיבי מלא</title>
+    <title>פרופיל לומד והתאמות - מפוצל</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,9 +45,9 @@
         }
 
         @keyframes pulse-ring {
-            0% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
-            70% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 0 15px rgba(249, 115, 22, 0); }
-            100% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(249, 115, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
         }
 
         .animate-pulse-ring {
@@ -97,7 +97,7 @@
             Users: (p) => <IconBase {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></IconBase>
         };
 
-        // --- PROFILE DATA (Verified against 29.11 Draft) ---
+        // --- PROFILE DATA ---
         const profileData = [
           {
             id: 'personal',
@@ -402,7 +402,7 @@
                   </button>
                 ))}
               </div>
-              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800"><Icons.Compass size={18} /></button>
+              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800" title="אפס תצוגה"><Icons.Compass size={18} /></button>
               <div className="px-2 py-1 bg-white/50 rounded text-[10px] text-gray-400 font-mono">{Math.round(scale * 100)}%</div>
             </div>
         );
@@ -467,35 +467,231 @@
             const handleWheel = (e) => { const s = -e.deltaY * 0.001; setTransform(prev => ({ ...prev, scale: Math.min(Math.max(0.4, transform.scale * (1 + s)), 3) })); };
 
             return (
-                <div ref={containerRef} className={`w-full h-full overflow-hidden relative bg-slate-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                <div ref={containerRef} className={`w-full h-full overflow-hidden relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                     onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} onWheel={handleWheel}>
                     <div style={{ transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`, transformOrigin: 'center', width: '100%', height: '100%' }}>{children(transform.scale)}</div>
                 </div>
             );
         };
 
-        const App = () => {
-          const resetZoomRef = useRef(null);
-          const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-          
-          // State for Left System (Profile)
-          const [activeDomainId, setActiveDomainId] = useState(null);
-          const [activeCategoryId, setActiveCategoryId] = useState(null); 
-          const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
-          
-          // State for Right System (Adjustments)
-          const [activeAdjustmentId, setActiveAdjustmentId] = useState(null);
-          const [highlightedAdjustmentId, setHighlightedAdjustmentId] = useState(null);
-          const [showDescription, setShowDescription] = useState(false);
+        // --- SUB-COMPONENTS FOR EACH SYSTEM ---
 
+        const ProfileSystem = ({ width, height, activeDomainId, onDomainSelect, stageFilter, filteredData }) => {
+            const [activeCategoryId, setActiveCategoryId] = useState(null); 
+            const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
+            
+            // Clear sub-selections when main domain changes
+            useEffect(() => {
+                setActiveCategoryId(null);
+                setSelectedSubDomainId(null);
+            }, [activeDomainId]);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const MAIN_RADIUS = Math.min(width, height) * 0.3;
+            const SUB_RADIUS_OFFSET = 140;
+            const CENTER_SIZE = 110;
+            const MAIN_NODE_SIZE = 80;
+            const SUB_NODE_SIZE = 65;
+
+            const handleSubClick = (sub) => {
+                if (sub.isCategory) {
+                    setActiveCategoryId(activeCategoryId === sub.id ? null : sub.id);
+                } else {
+                    const id = sub.title; 
+                    setSelectedSubDomainId(selectedSubDomainId === id ? null : id);
+                }
+            };
+
+            return (
+                <>
+                    <div className="absolute rounded-full blur-[80px] opacity-20 pointer-events-none transition-colors duration-1000"
+                         style={{ width: '80%', height: '80%', left: centerX, top: centerY, transform: 'translate(-50%, -50%)', backgroundColor: activeDomainId ? '#dbeafe' : '#f1f5f9' }}>
+                    </div>
+
+                    <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-50 text-slate-800 cursor-pointer hover:shadow-xl transition-all duration-300"
+                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: centerX, top: centerY, transform: 'translate(-50%, -50%)' }}
+                         onClick={(e) => { e.stopPropagation(); onDomainSelect(null); }}>
+                       <Icons.User size={30} className="text-slate-400 mb-1 opacity-50"/>
+                       <h2 className="font-extrabold text-center leading-none text-sm">פרופיל<br/>לומד</h2>
+                    </div>
+
+                    {filteredData.map((domain, i) => {
+                      const angleDeg = (360 / filteredData.length) * i - 90;
+                      const pos = calculatePosition(angleDeg, MAIN_RADIUS, centerX, centerY);
+                      const isActive = activeDomainId === domain.id;
+
+                      return (
+                        <React.Fragment key={domain.id}>
+                          <Line x1={centerX} y1={centerY} x2={pos.x} y2={pos.y} isActive={isActive} />
+                          <button onClick={(e) => { e.stopPropagation(); onDomainSelect(isActive ? null : domain.id); }}
+                            className={`absolute rounded-full shadow-md flex flex-col items-center justify-center text-center transition-all duration-500 z-30 border-2 border-white group outline-none bg-gradient-to-br ${domain.color} text-white ${isActive ? 'scale-110 ring-4 ring-offset-2 ring-blue-50' : 'hover:scale-105 opacity-90'}`}
+                            style={{ width: MAIN_NODE_SIZE, height: MAIN_NODE_SIZE, left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)' }}>
+                            <div className="mb-0.5 opacity-95">{React.cloneElement(domain.icon, { size: 18 })}</div>
+                            <span className="font-bold px-1 line-clamp-2 text-[10px]">{domain.title}</span>
+                          </button>
+
+                          {isActive && domain.subDomains.map((sub, j) => {
+                            const spread = 80, startAngle = angleDeg - (spread / 2);
+                            const step = domain.subDomains.length > 1 ? spread / (domain.subDomains.length - 1) : 0;
+                            const subAngle = domain.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
+                            const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, centerX, centerY);
+                            const isCatActive = activeCategoryId === sub.id;
+                            const isExpanded = selectedSubDomainId === sub.title;
+
+                            return (
+                              <React.Fragment key={j}>
+                                <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
+                                <NodeButton title={sub.title} metrics={sub.metrics} source={sub.source} colorClass={domain.color} textColor={domain.textColor} bgSolid={domain.bgSolid}
+                                    onClick={(e) => { e.stopPropagation(); handleSubClick(sub); }}
+                                    pos={subPos} size={SUB_NODE_SIZE} delay={j * 50} isCategory={sub.isCategory} expanded={isExpanded} />
+                                
+                                {sub.isCategory && isCatActive && sub.children && sub.children.map((child, k) => {
+                                    const cSpread = 70, cStart = subAngle - (cSpread/2), cStep = sub.children.length > 1 ? cSpread/(sub.children.length-1) : 0;
+                                    const cAngle = sub.children.length === 1 ? subAngle : cStart + (cStep * k);
+                                    const cPos = calculatePosition(cAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET + 80, centerX, centerY);
+                                    const isChildExpanded = selectedSubDomainId === child.title;
+                                    return (
+                                        <React.Fragment key={k}>
+                                            <Line x1={subPos.x} y1={subPos.y} x2={cPos.x} y2={cPos.y} isActive={true} isDashed={true} />
+                                            <NodeButton title={child.title} metrics={child.metrics} source={child.source} colorClass={domain.color} textColor={domain.textColor} bgSolid={domain.bgSolid}
+                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomainId(isChildExpanded ? null : child.title); }}
+                                                pos={cPos} size={65} delay={k * 50} expanded={isChildExpanded} />
+                                        </React.Fragment>
+                                    );
+                                })}
+                              </React.Fragment>
+                            );
+                          })}
+                        </React.Fragment>
+                      );
+                    })}
+                </>
+            );
+        };
+
+        const AdjustmentSystem = ({ width, height, highlightedAdjustmentId }) => {
+            const [activeAdjustmentId, setActiveAdjustmentId] = useState(null);
+            const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
+            const [showDescription, setShowDescription] = useState(false);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const MAIN_RADIUS = Math.min(width, height) * 0.3;
+            const SUB_RADIUS_OFFSET = 140;
+            const CENTER_SIZE = 110;
+            const MAIN_NODE_SIZE = 80;
+            const SUB_NODE_SIZE = 65;
+
+            // Handle highlight changes
+            useEffect(() => {
+                if (highlightedAdjustmentId === 'path_level') {
+                    // Optional: You can auto-open or just highlight. User asked to "show relevant", highlighting is good.
+                } else {
+                    setShowDescription(false);
+                }
+            }, [highlightedAdjustmentId]);
+
+            const handleAdjustmentClick = (adjId) => {
+                setActiveAdjustmentId(prev => prev === adjId ? null : adjId);
+                setSelectedSubDomainId(null);
+                
+                if (adjId === 'path_level' && highlightedAdjustmentId === 'path_level') {
+                    setShowDescription(!showDescription);
+                }
+            };
+
+            return (
+                <>
+                    <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-100 text-slate-800"
+                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: centerX, top: centerY, transform: 'translate(-50%, -50%)' }}>
+                       <Icons.Settings size={30} className="text-gray-400 mb-1 opacity-50"/>
+                       <h2 className="font-extrabold text-center leading-none text-sm">מערכת<br/>התאמות</h2>
+                    </div>
+
+                    {adjustmentsData.map((adj, i) => {
+                        const angleDeg = (360 / adjustmentsData.length) * i - 90;
+                        const pos = calculatePosition(angleDeg, MAIN_RADIUS, centerX, centerY);
+                        const isHighlighted = highlightedAdjustmentId === adj.id;
+                        const isActive = activeAdjustmentId === adj.id;
+
+                        return (
+                            <React.Fragment key={adj.id}>
+                                <Line x1={centerX} y1={centerY} x2={pos.x} y2={pos.y} isActive={isActive || isHighlighted} />
+                                <NodeButton 
+                                    title={adj.title} 
+                                    metrics="" source="" 
+                                    colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
+                                    onClick={(e) => { e.stopPropagation(); handleAdjustmentClick(adj.id); }}
+                                    pos={pos} size={MAIN_NODE_SIZE} delay={i * 50} isCategory={false} expanded={false}
+                                    isHighlighted={isHighlighted}
+                                />
+                                
+                                {isActive && adj.subDomains.map((sub, j) => {
+                                    const spread = 80, startAngle = angleDeg - (spread / 2);
+                                    const step = adj.subDomains.length > 1 ? spread / (adj.subDomains.length - 1) : 0;
+                                    const subAngle = adj.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
+                                    const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, centerX, centerY);
+                                    const isExpanded = selectedSubDomainId === sub.title;
+
+                                    return (
+                                        <React.Fragment key={j}>
+                                            <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
+                                            <NodeButton 
+                                                title={sub.title} 
+                                                metrics={sub.metrics} 
+                                                source="" 
+                                                colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
+                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomainId(isExpanded ? null : sub.title); }}
+                                                pos={subPos} size={SUB_NODE_SIZE} delay={j * 50} expanded={isExpanded}
+                                            />
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </React.Fragment>
+                        );
+                    })}
+
+                    {showDescription && (
+                        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-sm bg-white/95 backdrop-blur-md border-t-4 border-orange-500 rounded-lg shadow-2xl p-4 z-[100] animate-fadeIn text-right">
+                            <button onClick={() => setShowDescription(false)} className="absolute top-2 left-2 text-gray-400 hover:text-gray-600"><Icons.X size={20}/></button>
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2 text-orange-600 font-bold">
+                                    <Icons.GitBranch size={20}/>
+                                    <h3 className="text-sm">התאמת מסלול לידע</h3>
+                                </div>
+                                <p className="text-gray-600 text-xs leading-relaxed">
+                                    זיהוי רמת הידע (בסיס/העמקה) מאפשר למערכת להתאים אוטומטית את דרגת הקושי והתיווך במסלול הלמידה.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </>
+            );
+        }
+
+        const App = () => {
+          const profileZoomRef = useRef(null);
+          const adjustmentsZoomRef = useRef(null);
+          const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+          const [activeDomainId, setActiveDomainId] = useState(null);
+          const [highlightedAdjustmentId, setHighlightedAdjustmentId] = useState(null);
           const [stageFilter, setStageFilter] = useState(0); 
 
           useEffect(() => {
+              // Mapping logic
               if (activeDomainId === 'knowledge') {
                   setHighlightedAdjustmentId('path_level');
+              } else if (activeDomainId === 'srl') {
+                  setHighlightedAdjustmentId('insights');
+              } else if (activeDomainId === 'personal') {
+                  setHighlightedAdjustmentId('tools');
+              } else if (activeDomainId === 'social_emotional') {
+                  setHighlightedAdjustmentId('human');
+              } else if (activeDomainId === 'skills') {
+                  setHighlightedAdjustmentId('component');
               } else {
                   setHighlightedAdjustmentId(null);
-                  setShowDescription(false);
               }
           }, [activeDomainId]);
 
@@ -518,177 +714,51 @@
             window.addEventListener('resize', up); up(); return () => window.removeEventListener('resize', up);
           }, []);
 
-          const minDim = Math.min(dimensions.width, dimensions.height);
-          const leftCenterX = dimensions.width < 1000 ? dimensions.width / 2 : dimensions.width * 0.35;
-          const leftCenterY = dimensions.height / 2;
-          const rightCenterX = dimensions.width < 1000 ? dimensions.width / 2 + 800 : dimensions.width * 0.75; 
-          const rightCenterY = dimensions.height / 2;
-
-          const MAIN_RADIUS = 200; 
-          const SUB_RADIUS_OFFSET = 140; 
-          const CENTER_SIZE = 110;
-          const MAIN_NODE_SIZE = 80;
-          const SUB_NODE_SIZE = 65;
-
-          const handleAdjustmentClick = (adjId) => {
-              // Toggle logic for adjustment expansion
-              setActiveAdjustmentId(prev => prev === adjId ? null : adjId);
-              
-              if (adjId === 'path_level' && highlightedAdjustmentId === 'path_level') {
-                  setShowDescription(!showDescription);
-              }
+          // Reset both zooms
+          const handleReset = () => {
+              if (profileZoomRef.current) profileZoomRef.current();
+              if (adjustmentsZoomRef.current) adjustmentsZoomRef.current();
           };
 
           return (
             <div className="h-full w-full bg-slate-50 flex flex-col font-sans overflow-hidden text-right" dir="rtl">
               <header className="bg-white/90 backdrop-blur-sm shadow-sm p-3 z-50 relative border-b border-gray-100 flex-shrink-0 flex items-center justify-between px-6">
                 <h1 className="text-lg font-bold text-gray-800">פרופיל לומד ומערכת התאמות</h1>
-                <Controls activeFilter={stageFilter} onFilterChange={setStageFilter} onReset={() => resetZoomRef.current && resetZoomRef.current()} scale={1} />
+                <Controls activeFilter={stageFilter} onFilterChange={setStageFilter} onReset={handleReset} scale={1} />
               </header>
 
-              <main className="flex-1 relative overflow-hidden w-full h-full">
-                <PanZoomWrapper onResetRef={resetZoomRef}>
-                 {(scale) => (
-                  <>
-                    {/* --- SYSTEM 1: LEARNER PROFILE (LEFT) --- */}
-                    
-                    <div className="absolute rounded-full blur-[80px] opacity-20 pointer-events-none transition-colors duration-1000"
-                         style={{ width: '600px', height: '600px', left: leftCenterX, top: leftCenterY, transform: 'translate(-50%, -50%)', backgroundColor: activeDomainId ? '#dbeafe' : '#f1f5f9' }}>
-                    </div>
+              <main className="flex-1 flex w-full h-full relative">
+                  
+                  {/* --- RIGHT SIDE: LEARNER PROFILE (50%) --- */}
+                  <div className="w-1/2 h-full relative border-l-2 border-slate-200 bg-white">
+                      <div className="absolute top-2 right-2 z-10 bg-blue-50 text-blue-800 text-[10px] px-2 py-1 rounded-full font-bold">פרופיל לומד</div>
+                      <PanZoomWrapper onResetRef={profileZoomRef}>
+                          {(scale) => (
+                              <ProfileSystem 
+                                  width={dimensions.width / 2} 
+                                  height={dimensions.height} 
+                                  activeDomainId={activeDomainId}
+                                  onDomainSelect={setActiveDomainId}
+                                  stageFilter={stageFilter}
+                                  filteredData={filteredData}
+                              />
+                          )}
+                      </PanZoomWrapper>
+                  </div>
 
-                    <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-50 text-slate-800 cursor-pointer hover:shadow-xl transition-all duration-300"
-                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: leftCenterX, top: leftCenterY, transform: 'translate(-50%, -50%)' }}
-                         onClick={(e) => { e.stopPropagation(); setActiveDomainId(null); }}>
-                       <Icons.User size={30} className="text-slate-400 mb-1 opacity-50"/>
-                       <h2 className="font-extrabold text-center leading-none text-sm">פרופיל<br/>לומד</h2>
-                    </div>
-
-                    {filteredData.map((domain, i) => {
-                      const angleDeg = (360 / filteredData.length) * i - 90;
-                      const pos = calculatePosition(angleDeg, MAIN_RADIUS, leftCenterX, leftCenterY);
-                      const isActive = activeDomainId === domain.id;
-
-                      return (
-                        <React.Fragment key={domain.id}>
-                          <Line x1={leftCenterX} y1={leftCenterY} x2={pos.x} y2={pos.y} isActive={isActive} />
-                          <button onClick={(e) => { e.stopPropagation(); setActiveDomainId(isActive ? null : domain.id); setActiveCategoryId(null); setSelectedSubDomainId(null); }}
-                            className={`absolute rounded-full shadow-md flex flex-col items-center justify-center text-center transition-all duration-500 z-30 border-2 border-white group outline-none bg-gradient-to-br ${domain.color} text-white ${isActive ? 'scale-110 ring-4 ring-offset-2 ring-blue-50' : 'hover:scale-105 opacity-90'}`}
-                            style={{ width: MAIN_NODE_SIZE, height: MAIN_NODE_SIZE, left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)' }}>
-                            <div className="mb-0.5 opacity-95">{React.cloneElement(domain.icon, { size: 18 })}</div>
-                            <span className="font-bold px-1 line-clamp-2 text-[10px]">{domain.title}</span>
-                          </button>
-
-                          {isActive && domain.subDomains.map((sub, j) => {
-                            const spread = 80, startAngle = angleDeg - (spread / 2);
-                            const step = domain.subDomains.length > 1 ? spread / (domain.subDomains.length - 1) : 0;
-                            const subAngle = domain.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
-                            const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, leftCenterX, leftCenterY);
-                            const isCatActive = activeCategoryId === sub.id;
-                            const isExpanded = selectedSubDomainId === sub.title;
-
-                            return (
-                              <React.Fragment key={j}>
-                                <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
-                                <NodeButton title={sub.title} metrics={sub.metrics} source={sub.source} colorClass={domain.color} textColor={domain.textColor} bgSolid={domain.bgSolid}
-                                    onClick={(e) => { e.stopPropagation(); sub.isCategory ? setActiveCategoryId(isCatActive ? null : sub.id) : setSelectedSubDomainId(isExpanded ? null : sub.title); }}
-                                    pos={subPos} size={SUB_NODE_SIZE} delay={j * 50} isCategory={sub.isCategory} expanded={isExpanded} />
-                                
-                                {sub.isCategory && isCatActive && sub.children && sub.children.map((child, k) => {
-                                    const cSpread = 70, cStart = subAngle - (cSpread/2), cStep = sub.children.length > 1 ? cSpread/(sub.children.length-1) : 0;
-                                    const cAngle = sub.children.length === 1 ? subAngle : cStart + (cStep * k);
-                                    const cPos = calculatePosition(cAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET + 80, leftCenterX, leftCenterY);
-                                    const isChildExpanded = selectedSubDomainId === child.title;
-                                    return (
-                                        <React.Fragment key={k}>
-                                            <Line x1={subPos.x} y1={subPos.y} x2={cPos.x} y2={cPos.y} isActive={true} isDashed={true} />
-                                            <NodeButton title={child.title} metrics={child.metrics} source={child.source} colorClass={domain.color} textColor={domain.textColor} bgSolid={domain.bgSolid}
-                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomainId(isChildExpanded ? null : child.title); }}
-                                                pos={cPos} size={65} delay={k * 50} expanded={isChildExpanded} />
-                                        </React.Fragment>
-                                    );
-                                })}
-                              </React.Fragment>
-                            );
-                          })}
-                        </React.Fragment>
-                      );
-                    })}
-
-                    {/* --- SYSTEM 2: ADJUSTMENTS (RIGHT) --- */}
-                    
-                    <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-100 text-slate-800"
-                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: rightCenterX, top: rightCenterY, transform: 'translate(-50%, -50%)' }}
-                         onClick={(e) => { e.stopPropagation(); setActiveAdjustmentId(null); }}>
-                       <Icons.Settings size={30} className="text-gray-400 mb-1 opacity-50"/>
-                       <h2 className="font-extrabold text-center leading-none text-sm">מערכת<br/>התאמות</h2>
-                    </div>
-
-                    {adjustmentsData.map((adj, i) => {
-                        const angleDeg = (360 / adjustmentsData.length) * i - 90;
-                        const pos = calculatePosition(angleDeg, MAIN_RADIUS, rightCenterX, rightCenterY);
-                        const isHighlighted = highlightedAdjustmentId === adj.id;
-                        const isActive = activeAdjustmentId === adj.id;
-
-                        return (
-                            <React.Fragment key={adj.id}>
-                                <Line x1={rightCenterX} y1={rightCenterY} x2={pos.x} y2={pos.y} isActive={isActive || isHighlighted} />
-                                <NodeButton 
-                                    title={adj.title} 
-                                    metrics="" source="" 
-                                    colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
-                                    onClick={(e) => { e.stopPropagation(); handleAdjustmentClick(adj.id); }}
-                                    pos={pos} size={MAIN_NODE_SIZE} delay={i * 50} isCategory={false} expanded={false}
-                                    isHighlighted={isHighlighted}
-                                />
-                                {isHighlighted && <div className="absolute text-xs font-bold text-orange-600 bg-white px-2 py-1 rounded shadow-sm animate-bounce" style={{ left: pos.x, top: pos.y - 60, transform: 'translateX(-50%)' }}>לחץ עליי!</div>}
-
-                                {/* Adjustment Sub-Domains (Opening outward) */}
-                                {isActive && adj.subDomains.map((sub, j) => {
-                                    const spread = 80;
-                                    const startAngle = angleDeg - (spread / 2);
-                                    const step = adj.subDomains.length > 1 ? spread / (adj.subDomains.length - 1) : 0;
-                                    const subAngle = adj.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
-                                    const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, rightCenterX, rightCenterY);
-                                    const isExpanded = selectedSubDomainId === sub.title;
-
-                                    return (
-                                        <React.Fragment key={j}>
-                                            <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
-                                            <NodeButton 
-                                                title={sub.title} 
-                                                metrics={sub.metrics} 
-                                                source="" 
-                                                colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
-                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomainId(isExpanded ? null : sub.title); }}
-                                                pos={subPos} size={SUB_NODE_SIZE} delay={j * 50} expanded={isExpanded}
-                                            />
-                                        </React.Fragment>
-                                    );
-                                })}
-                            </React.Fragment>
-                        );
-                    })}
-
-                  </>
-                 )}
-                </PanZoomWrapper>
-
-                {/* --- DESCRIPTION BOX --- */}
-                {showDescription && (
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-2xl bg-white/95 backdrop-blur-md border-t-4 border-orange-500 rounded-lg shadow-2xl p-6 z-[100] animate-fadeIn">
-                        <button onClick={() => setShowDescription(false)} className="absolute top-2 left-2 text-gray-400 hover:text-gray-600"><Icons.X size={20}/></button>
-                        <div className="flex items-start gap-4">
-                            <div className="p-3 bg-orange-100 text-orange-600 rounded-full"><Icons.GitBranch size={32}/></div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-800 mb-2">השפעת רמת הידע על מסלול הלמידה</h3>
-                                <p className="text-gray-600 leading-relaxed">
-                                    כאשר המערכת מזהה רמת שליטה ספציפית בידע (בסיס, קידום או העמקה), היא מבצעת <strong>התאמה ברמת מסלול</strong>. 
-                                    ההתאמה מתבטאת בשינוי דרגות הקושי של המשימות: תלמיד המפגין שליטה בסיסית יקבל מסלול מדורג עם יותר תיווך, בעוד שתלמיד בשלב העמקה יקבל אתגרים מורכבים יותר הדורשים יישום ואנליזה.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                  {/* --- LEFT SIDE: ADJUSTMENTS (50%) --- */}
+                  <div className="w-1/2 h-full relative bg-slate-50">
+                      <div className="absolute top-2 left-2 z-10 bg-orange-50 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold">מערכת התאמות</div>
+                      <PanZoomWrapper onResetRef={adjustmentsZoomRef}>
+                          {(scale) => (
+                              <AdjustmentSystem 
+                                  width={dimensions.width / 2} 
+                                  height={dimensions.height} 
+                                  highlightedAdjustmentId={highlightedAdjustmentId}
+                              />
+                          )}
+                      </PanZoomWrapper>
+                  </div>
 
               </main>
             </div>
