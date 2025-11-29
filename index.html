@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>פרופיל לומד הוליסטי - מיומנויות וזום</title>
+    <title>פרופיל לומד הוליסטי - עיגולים מתרחבים</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,7 +24,7 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
         
         /* Fly Out Animation */
         .animate-flyOut {
@@ -44,11 +44,19 @@
           }
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
         /* Cursor styles for Pan/Zoom */
         .cursor-grab { cursor: grab; }
         .cursor-grabbing { cursor: grabbing; }
+        
+        /* Smooth sizing transition */
+        .transition-size {
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                        height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        left 0.4s ease, top 0.4s ease,
+                        transform 0.4s ease,
+                        background-color 0.3s ease,
+                        box-shadow 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-slate-50 h-screen w-screen overflow-hidden">
@@ -81,7 +89,6 @@
         };
 
         // --- DATA STRUCTURE ---
-        // Refactored Skills to be hierarchical: Skills -> Categories -> Metrics
         const rawData = [
           {
             id: 'personal',
@@ -136,13 +143,12 @@
             bgColor: 'bg-rose-100',
             borderColor: 'border-rose-200',
             textColor: 'text-rose-800',
-            // Structure: Skills -> Categories -> Children (Metrics)
             subDomains: [
               {
                 id: 'skills_social',
                 title: 'חברתיות-רגשיות',
                 isCategory: true,
-                stage: 2, // General stage for category (or derived)
+                stage: 2, 
                 children: [
                   { title: 'מיומנויות חברתיות', metrics: 'תקשורת - העברת מסר, עבודת צוות, מודעות והתנהלות חברתית', source: 'דיווח מורה (DESSA)', stage: 2 },
                   { title: 'מיומנויות רגשיות', metrics: 'מודעות עצמית, הכוונה עצמית', source: 'דיווח מורה (DESSA)', stage: 2 },
@@ -175,7 +181,7 @@
                 id: 'skills_meta',
                 title: 'מטא-קוגניטיביות',
                 isCategory: true,
-                stage: 1, // Contains stage 1 items
+                stage: 1, 
                 children: [
                    { title: 'תכנון למידה', metrics: 'תכנון מטרות, אסטרטגיות, זמן, משאבים', source: 'יומן למידה / MSLQ', stage: 2 },
                    { title: 'ויסות עצמי', metrics: 'ניטור הבנה, בקרה, תיקון אי-הבנה', source: 'MSLQ', stage: 2 },
@@ -298,7 +304,6 @@
 
         // --- COMPONENTS ---
 
-        // Controls (Filter + Reset)
         const Controls = ({ activeFilter, onFilterChange, onReset, scale }) => {
           return (
             <div className="flex gap-2 items-center">
@@ -325,52 +330,6 @@
           );
         };
 
-        const DetailModal = ({ subDomain, colorTheme, onClose }) => {
-          if (!subDomain) return null;
-          return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-fadeIn" onWheel={(e) => e.stopPropagation()}>
-              <div 
-                className={`relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border-t-8 ${colorTheme.borderColor} flex flex-col max-h-[80vh] animate-flyOut`}
-                style={{'--start-x': '50%', '--start-y': '50%', '--end-x': '50%', '--end-y': '50%'}} // Reuse animation roughly
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button onClick={onClose} className="absolute top-3 left-3 p-1.5 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors z-10">
-                  <Icons.X size={18} className="text-gray-600" />
-                </button>
-                <div className={`p-5 bg-gradient-to-r ${colorTheme.color} bg-opacity-10`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="px-2 py-0.5 bg-white/20 backdrop-blur-md rounded text-white text-[10px] font-bold border border-white/30">
-                       שלב {subDomain.stage}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-1 drop-shadow-md pr-6">{subDomain.title}</h3>
-                </div>
-                <div className="p-5 space-y-4 bg-white overflow-y-auto custom-scrollbar">
-                  {subDomain.metrics && (
-                    <div>
-                      <div className={`flex items-center gap-2 mb-2 font-bold text-sm ${colorTheme.textColor}`}>
-                        <Icons.Activity size={16} /><h4>פירוט מדדים</h4>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 text-gray-700 text-sm">{subDomain.metrics}</div>
-                    </div>
-                  )}
-                  {subDomain.source && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-1 text-gray-400 font-semibold text-xs uppercase">
-                        <Icons.Database size={14} /><h4>מקור נתונים</h4>
-                      </div>
-                      <div className="flex items-center">
-                         <div className={`h-4 w-1 ${colorTheme.bgSolid} rounded-full ml-2 opacity-50`}></div>
-                         <p className="text-gray-600 text-xs font-medium">{subDomain.source}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        };
-
         const Line = ({ x1, y1, x2, y2, isActive, isDashed = false }) => {
           const dx = x2 - x1;
           const dy = y2 - y1;
@@ -388,37 +347,85 @@
           );
         };
 
-        const NodeButton = ({ title, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false }) => {
+        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false }) => {
+            // If expanded, use fixed large size, otherwise use prop size
+            const currentSize = expanded ? 320 : size; // Expanded size
+            const currentZ = expanded ? 100 : 40; // High Z for expanded
+            
             const style = {
                 '--start-x': `${pos.x}px`, '--start-y': `${pos.y}px`, '--end-x': `${pos.x}px`, '--end-y': `${pos.y}px`,
-                width: size, height: size, left: pos.x, top: pos.y, animationDelay: `${delay}ms`
+                width: currentSize, height: currentSize, left: pos.x, top: pos.y, 
+                zIndex: currentZ,
+                animationDelay: `${delay}ms`
             };
+
             return (
                 <button onClick={onClick} style={style}
-                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center p-2
-                                hover:border-blue-400 hover:scale-105 transition-transform duration-300 z-40 animate-flyOut forwards
-                                ${isCategory ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'} `}>
-                    <span className={`font-bold text-center leading-tight ${textColor} line-clamp-3`} style={{ fontSize: size * 0.14 }}>{title}</span>
-                    <div className={`mt-1 h-0.5 w-3 rounded-full ${bgSolid} opacity-30`}></div>
-                    {isCategory && <div className="absolute -bottom-1 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>}
+                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center 
+                                transition-size cursor-pointer
+                                ${expanded ? 'bg-white ring-4 ring-offset-2 ring-blue-100 shadow-2xl' : 'hover:border-blue-400 hover:scale-105 animate-flyOut forwards'}
+                                ${(!expanded && isCategory) ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'} 
+                    `}>
+                    
+                    {/* Content Container - Switch based on expansion */}
+                    {!expanded ? (
+                        <>
+                            <span className={`font-bold text-center leading-tight ${textColor} line-clamp-3 px-2`} style={{ fontSize: size * 0.14 }}>{title}</span>
+                            <div className={`mt-1 h-0.5 w-3 rounded-full ${bgSolid} opacity-30`}></div>
+                            {isCategory && <div className="absolute -bottom-1 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>}
+                        </>
+                    ) : (
+                        <div className="flex flex-col w-full h-full p-6 text-right relative animate-fadeIn">
+                            <button className="absolute top-2 left-3 p-2 text-gray-400 hover:text-gray-600 transition-colors" title="סגור">
+                                <Icons.X size={20} />
+                            </button>
+                            
+                            <div className="flex-shrink-0 mb-4 pr-2 border-r-4 border-blue-500">
+                                <h3 className={`text-xl font-bold ${textColor}`}>{title}</h3>
+                            </div>
+                            
+                            <div className="flex-1 overflow-y-auto custom-scrollbar pl-2">
+                                {metrics && (
+                                    <div className="mb-4">
+                                        <div className="flex items-center gap-2 mb-1 text-gray-500 font-bold text-xs">
+                                            <Icons.Activity size={14} /><span>מדדים</span>
+                                        </div>
+                                        <p className="text-gray-700 text-sm leading-relaxed bg-slate-50 p-2 rounded">{metrics}</p>
+                                    </div>
+                                )}
+                                {source && (
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1 text-gray-400 font-bold text-[10px] uppercase">
+                                            <Icons.Database size={12} /><span>מקור נתונים</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <div className={`h-3 w-1 ${bgSolid} rounded-full ml-2 opacity-50`}></div>
+                                            <p className="text-gray-500 text-xs">{source}</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </button>
             );
         };
 
-        // --- PAN & ZOOM WRAPPER ---
         const PanZoomWrapper = ({ children, contentSize, onResetRef }) => {
             const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
             const [isDragging, setIsDragging] = useState(false);
             const startPan = useRef({ x: 0, y: 0 });
             const containerRef = useRef(null);
 
-            // Expose reset function
             useEffect(() => {
                 if (onResetRef) onResetRef.current = () => setTransform({ x: 0, y: 0, scale: 1 });
             }, [onResetRef]);
 
             const handleMouseDown = (e) => {
-                if (e.button !== 0) return; // Only left click
+                // Allow dragging on background, but check if we clicked a button
+                if (e.button !== 0) return;
+                // If target is button or inside button, don't drag immediately unless we handle propagation carefully.
+                // Actually, dragging the canvas is fine even if we start on a button, but let's avoid conflict.
                 setIsDragging(true);
                 startPan.current = { x: e.clientX - transform.x, y: e.clientY - transform.y };
             };
@@ -432,7 +439,6 @@
             const handleMouseUp = () => setIsDragging(false);
 
             const handleWheel = (e) => {
-                // e.preventDefault(); // Sometimes interferes with browser scroll if not fullscreen
                 const scaleAmount = -e.deltaY * 0.001;
                 const newScale = Math.min(Math.max(0.5, transform.scale * (1 + scaleAmount)), 3);
                 setTransform(prev => ({ ...prev, scale: newScale }));
@@ -467,22 +473,17 @@
           const resetZoomRef = useRef(null);
           const [dimensions, setDimensions] = useState({ width: 0, height: 0, cx: 0, cy: 0 });
           const [activeDomainId, setActiveDomainId] = useState(null);
-          const [activeCategoryId, setActiveCategoryId] = useState(null); // For Level 2 categories
-          const [selectedSubDomain, setSelectedSubDomain] = useState(null); // For Modal
+          const [activeCategoryId, setActiveCategoryId] = useState(null); 
+          const [selectedSubDomainId, setSelectedSubDomainId] = useState(null); // Changed to ID string
           const [stageFilter, setStageFilter] = useState(0); 
 
-          // Filter Logic (Recursive for nested skills)
           const filteredData = useMemo(() => {
             return rawData.map(domain => {
-                // Filter direct subDomains
                 const visibleSubs = domain.subDomains.filter(sub => {
-                    // Check direct stage
                     const selfMatch = stageFilter === 0 || sub.stage === 1;
-                    // Check children stage (if category)
                     const childrenMatch = sub.children && sub.children.some(c => stageFilter === 0 || c.stage === 1);
                     return selfMatch || childrenMatch;
                 }).map(sub => {
-                    // If it has children, filter them too
                     if (sub.children) {
                         return {
                             ...sub,
@@ -495,12 +496,11 @@
             }).filter(d => d.subDomains.length > 0);
           }, [stageFilter]);
 
-          // Reset selections on filter change
           useEffect(() => {
             setActiveDomainId(null);
             setActiveCategoryId(null);
-            setSelectedSubDomain(null);
-            if(resetZoomRef.current) resetZoomRef.current(); // Optional: reset zoom on filter change? maybe not.
+            setSelectedSubDomainId(null);
+            if(resetZoomRef.current) resetZoomRef.current(); 
           }, [stageFilter]);
 
           useLayoutEffect(() => {
@@ -521,30 +521,30 @@
             if (activeDomainId === id) {
                 setActiveDomainId(null);
                 setActiveCategoryId(null);
+                setSelectedSubDomainId(null);
             } else {
                 setActiveDomainId(id);
                 setActiveCategoryId(null);
+                setSelectedSubDomainId(null);
             }
           };
 
           const handleSubClick = (sub) => {
              if (sub.isCategory) {
-                 // Open Level 3
                  setActiveCategoryId(activeCategoryId === sub.id ? null : sub.id);
              } else {
-                 // Open Modal
-                 setSelectedSubDomain(sub);
+                 // Toggle Expansion: Identify by title since IDs aren't on all subs
+                 const id = sub.title; 
+                 setSelectedSubDomainId(selectedSubDomainId === id ? null : id);
              }
           };
 
           const activeDomainObj = filteredData.find(d => d.id === activeDomainId);
 
-          // Geometry Constants
           const minDim = Math.min(dimensions.width, dimensions.height);
-          // Scale base sizes slightly smaller to allow zoom expansion
           const MAIN_RADIUS = 220; 
           const SUB_RADIUS_OFFSET = 160; 
-          const LEVEL3_RADIUS_OFFSET = 80; // Extra distance for level 3
+          const LEVEL3_RADIUS_OFFSET = 80; 
           const CENTER_SIZE = 120;
           const MAIN_NODE_SIZE = 90;
           const SUB_NODE_SIZE = 75;
@@ -554,7 +554,6 @@
             <div className="h-full w-full bg-slate-50 flex flex-col font-sans overflow-hidden text-right" dir="rtl">
               <header className="bg-white/90 backdrop-blur-sm shadow-sm p-3 z-50 relative border-b border-gray-100 flex-shrink-0 flex items-center justify-between px-6">
                 <h1 className="text-lg font-bold text-gray-800">פרופיל לומד</h1>
-                {/* We pass scale=1 initially, updated inside wrapper */}
                 <Controls activeFilter={stageFilter} onFilterChange={setStageFilter} onReset={() => resetZoomRef.current && resetZoomRef.current()} scale={1} />
               </header>
 
@@ -562,7 +561,6 @@
                 <PanZoomWrapper onResetRef={resetZoomRef}>
                  {(currentScale) => (
                   <>
-                    {/* Background Aura */}
                     <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                        <div className={`rounded-full blur-[100px] transition-all duration-1000 opacity-20`}
                          style={{ width: '800px', height: '800px', backgroundColor: activeDomainObj ? '' : '#dbeafe' }}>
@@ -570,7 +568,6 @@
                        </div>
                     </div>
 
-                    {/* Center Node */}
                     <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-50 text-slate-800 cursor-pointer hover:shadow-xl transition-all duration-300"
                       style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: dimensions.cx, top: dimensions.cy, transform: 'translate(-50%, -50%)' }}
                       onClick={(e) => { e.stopPropagation(); setActiveDomainId(null); }}>
@@ -579,7 +576,6 @@
                        {stageFilter !== 0 && <span className="text-[10px] mt-1 bg-gray-100 text-gray-500 px-2 rounded-full">שלב 1</span>}
                     </div>
 
-                    {/* Level 1: Main Nodes */}
                     {filteredData.map((domain, i) => {
                       const angleDeg = (360 / filteredData.length) * i - 90;
                       const pos = calculatePosition(angleDeg, MAIN_RADIUS, dimensions.cx, dimensions.cy);
@@ -601,7 +597,6 @@
                             <span className="font-bold px-1 line-clamp-2 text-[11px]">{domain.title}</span>
                           </button>
 
-                          {/* Level 2: Sub Nodes (or Categories) */}
                           {isActive && domain.subDomains.map((sub, j) => {
                             const subCount = domain.subDomains.length;
                             const spread = 80; 
@@ -610,12 +605,15 @@
                             const subAngle = subCount === 1 ? angleDeg : startAngle + (step * j);
                             const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, dimensions.cx, dimensions.cy);
                             const isCatActive = activeCategoryId === sub.id;
+                            const isExpanded = selectedSubDomainId === sub.title;
 
                             return (
                               <React.Fragment key={sub.title + j}>
                                 <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
                                 <NodeButton 
                                     title={sub.title} 
+                                    metrics={sub.metrics}
+                                    source={sub.source}
                                     colorClass={domain.color} 
                                     textColor={domain.textColor} 
                                     bgSolid={domain.bgSolid}
@@ -624,30 +622,33 @@
                                     size={SUB_NODE_SIZE} 
                                     delay={j * 50}
                                     isCategory={sub.isCategory}
+                                    expanded={isExpanded}
                                 />
 
-                                {/* Level 3: Children of Categories */}
                                 {sub.isCategory && isCatActive && sub.children && sub.children.map((child, k) => {
                                     const childCount = sub.children.length;
-                                    const childSpread = 70; // Wider spread for level 3
-                                    // Base the angle on the Level 2 angle to continue outward
+                                    const childSpread = 70; 
                                     const childStartAngle = subAngle - (childSpread / 2);
                                     const childStep = childCount > 1 ? childSpread / (childCount - 1) : 0;
                                     const childAngle = childCount === 1 ? subAngle : childStartAngle + (childStep * k);
                                     const childPos = calculatePosition(childAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET + LEVEL3_RADIUS_OFFSET, dimensions.cx, dimensions.cy);
+                                    const isChildExpanded = selectedSubDomainId === child.title;
 
                                     return (
                                         <React.Fragment key={child.title + k}>
                                             <Line x1={subPos.x} y1={subPos.y} x2={childPos.x} y2={childPos.y} isActive={true} isDashed={true} />
                                             <NodeButton 
                                                 title={child.title}
+                                                metrics={child.metrics}
+                                                source={child.source}
                                                 colorClass={domain.color}
                                                 textColor={domain.textColor}
                                                 bgSolid={domain.bgSolid}
-                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomain(child); }}
+                                                onClick={(e) => { e.stopPropagation(); handleSubClick(child); }}
                                                 pos={childPos}
                                                 size={LEVEL3_NODE_SIZE}
                                                 delay={k * 50}
+                                                expanded={isChildExpanded}
                                             />
                                         </React.Fragment>
                                     );
@@ -661,15 +662,6 @@
                   </>
                  )}
                 </PanZoomWrapper>
-
-                {/* Modal (Fixed position, ignore pan/zoom) */}
-                {selectedSubDomain && activeDomainObj && (
-                  <DetailModal 
-                    subDomain={selectedSubDomain}
-                    colorTheme={activeDomainObj}
-                    onClose={() => setSelectedSubDomain(null)}
-                  />
-                )}
               </main>
 
               <footer className="p-2 text-center text-gray-400 text-xs font-light tracking-wider bg-slate-50 border-t border-slate-100 flex-shrink-0 z-50 relative">
