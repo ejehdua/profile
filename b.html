@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>פרופיל לומד והתאמות</title>
+    <title>פרופיל לומד והתאמות - אינטראקטיבי מלא</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,9 +45,9 @@
         }
 
         @keyframes pulse-ring {
-            0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.7); }
-            70% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 20px rgba(234, 88, 12, 0); }
-            100% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
+            0% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            70% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 0 15px rgba(249, 115, 22, 0); }
+            100% { transform: translate(-50%, -50%) scale(0.95); box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
         }
 
         .animate-pulse-ring {
@@ -93,10 +93,11 @@
             MessageSquare: (p) => <IconBase {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></IconBase>,
             Bot: (p) => <IconBase {...p}><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></IconBase>,
             Layers: (p) => <IconBase {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></IconBase>,
-            GitBranch: (p) => <IconBase {...p}><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></IconBase>
+            GitBranch: (p) => <IconBase {...p}><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></IconBase>,
+            Users: (p) => <IconBase {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></IconBase>
         };
 
-        // --- PROFILE DATA (Existing) ---
+        // --- PROFILE DATA (Verified against 29.11 Draft) ---
         const profileData = [
           {
             id: 'personal',
@@ -107,23 +108,36 @@
             bgColor: 'bg-blue-100',
             textColor: 'text-blue-800',
             subDomains: [
-              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי, מצב סוציואקונומי', source: 'נתוני בית ספר', stage: 1 },
-              { title: 'תחומי עניין', metrics: 'תחביבים, תחומי עניין אישיים, כישורים מיוחדים', source: 'דיווח עצמי', stage: 1 },
-              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות', source: 'נתוני בית ספר', stage: 2 }
+              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי של ההורים, מצב סוציואקונומי (מדד טיפוח של בי"ס)', source: 'נתוני בית ספר', stage: 1 },
+              { title: 'תחומי עניין', metrics: 'תחביבים, תחומי עניין אישיים, כישורים מיוחדים', source: 'דיווח עצמי תלמיד', stage: 1 },
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת).', source: 'נתוני בית ספר', stage: 2 }
+            ]
+          },
+          {
+            id: 'personality',
+            title: 'מאפיינים אישיותיים',
+            icon: <Icons.Sparkles size={24} />,
+            color: 'from-purple-400 to-purple-600',
+            bgSolid: 'bg-purple-500',
+            bgColor: 'bg-purple-100',
+            textColor: 'text-purple-800',
+            subDomains: [
+              { title: 'תכונות אישיות', metrics: 'פתיחות להתנסויות, מוחצנות, נועם הליכות, מצפוניות, יציבות רגשית', source: 'שאלון דיווח עצמי לתלמיד - TIPI', stage: 2 }
             ]
           },
           {
             id: 'knowledge',
             title: 'ידע',
+            subtitle: 'מחולק למקצוע ולנושאי לימוד',
             icon: <Icons.BookOpen size={24} />,
             color: 'from-emerald-400 to-emerald-600',
             bgSolid: 'bg-emerald-500',
             bgColor: 'bg-emerald-100',
             textColor: 'text-emerald-800',
             subDomains: [
-              { title: 'רמת שליטה בידע', metrics: 'ידע עולם, ידע קודם רלוונטי', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמודדות עם קושי', metrics: 'התמודדות עם רמת קושי של שאלה', source: 'נתוני למידה', stage: 1 },
-              { title: 'רמת חשיבה', metrics: 'רמת חשיבה (זכירה, הבנה, יישום, אנליזה)', source: 'נתוני למידה', stage: 1 }
+              { title: 'רמת שליטה בידע ספציפי', metrics: 'ידע עולם, ידע קודם רלוונטי', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמודדות עם רמת קושי של שאלה', metrics: '', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמודדות עם רמת חשיבה', metrics: 'רמת חשיבה', source: 'נתוני למידה', stage: 1 }
             ]
           },
           {
@@ -141,9 +155,9 @@
                 isCategory: true,
                 stage: 2, 
                 children: [
-                  { title: 'מיומנויות חברתיות', metrics: 'תקשורת, שיתוף פעולה, מודעות חברתית', source: 'דיווח מורה (DESSA)', stage: 2 },
-                  { title: 'מיומנויות רגשיות', metrics: 'מודעות עצמית, הכוונה עצמית', source: 'דיווח מורה (DESSA)', stage: 2 },
-                  { title: 'מיומנויות תפקודיות', metrics: 'ניהול עצמי, חוסן, קבלת החלטות', source: 'דיווח מורה (DESSA)', stage: 2 }
+                  { title: 'מיומנויות חברתיות', metrics: 'תקשורת - העברת מסר, עבודת צוות, מודעות והתנהלות חברתית', source: 'דיווח מורה', stage: 2 },
+                  { title: 'מיומנויות רגשיות', metrics: 'מודעות עצמית, הכוונה עצמית', source: 'דיווח מורה', stage: 2 },
+                  { title: 'מיומנויות תפקודיות', metrics: 'ניהול עצמי, חוסן, גמישות, קבלת החלטות', source: 'דיווח מורה', stage: 2 }
                 ]
               },
               {
@@ -152,38 +166,47 @@
                 isCategory: true,
                 stage: 2,
                 children: [
-                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות, הבעה', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות והיסק ממקור בודד/מקורות מרובים, הבעה בכתב, הבעה בעל פה', source: 'נתוני למידה', stage: 2 },
                   { title: 'חשיבה ביקורתית', metrics: 'טיעון', source: 'נתוני למידה', stage: 2 },
-                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול, שיתופיות, תוכן דיגיטלי', source: 'נתוני למידה', stage: 2 }
+                  { title: 'חשיבה יצירתית', metrics: 'סקרנות ומקוריות, גמישות מחשבתית, יצירת הקשרים חדשים', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול ופתרון בעיות, שיתופיות, יצירת תוכן במדיה הדיגיטלית', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות מידע', metrics: 'איתור מידע, הערכת מידע, ארגון מידע, שימוש במידע, הצגת מידע (כולל מיזוג מידע, השוואה, התמצאות במפה)', source: 'נתוני למידה', stage: 2 }
+                ]
+              },
+              {
+                id: 'skills_disciplinary',
+                title: 'דיסציפלינריות',
+                isCategory: true,
+                stage: 1,
+                children: [
+                  { title: 'מיומנויות דיסציפלינריות', metrics: '(רשימה נפרדת לכל תחום דעת)', source: 'נתוני למידה', stage: 1 }
+                ]
+              },
+              {
+                id: 'skills_meta',
+                title: 'מטא-קוגניטיביות',
+                isCategory: true,
+                stage: 1, 
+                children: [
+                   { title: 'תכנון למידה', metrics: 'תכנון מטרות, תכנון אסטרטגיות, תכנון זמן, תכנון משאבים וסביבת למידה', source: 'יומן למידה / שאלון דיווח עצמי לתלמיד - MSLQ', stage: 2 },
+                   { title: 'ויסות עצמי מטא-קוגניטיבי', metrics: 'תכנון, ניטור ההבנה, ויסות ובקרה של הלמידה, הבהרה ותיקון כשיש אי־הבנה.', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 2 },
+                   { title: 'שימוש באסטרטגיות למידה', metrics: 'למידה שטחית / מעמיקה, שינון, עיבוד, ארגון, חשיבה ביקורתית, חשיבה רפלקטיבית', source: 'נתוני למידה / יומן למידה / שאלון דיווח עצמי לתלמיד - MSLQ, RSPQ-2F', stage: 2 },
+                   { title: 'מודעות לידע', metrics: 'שיפוט למידה, שיפוט הבנה, בטחון בתשובה, תחושת ידע', source: 'JOL, JOU, RCJ, FOK שאלות מסוג', stage: 1 }
                 ]
               }
             ]
           },
           {
-            id: 'srl',
-            title: 'SRL',
-            icon: <Icons.Activity size={24} />,
-            color: 'from-amber-400 to-amber-600',
-            bgSolid: 'bg-amber-500',
-            bgColor: 'bg-amber-100',
-            textColor: 'text-amber-800',
+            id: 'self_beliefs',
+            title: 'אמונות ביחס לעצמי',
+            icon: <Icons.Target size={24} />,
+            color: 'from-cyan-400 to-cyan-600',
+            bgSolid: 'bg-cyan-500',
+            bgColor: 'bg-cyan-100',
+            textColor: 'text-cyan-800',
             subDomains: [
-              { title: 'מעורבות', metrics: 'השתתפות בפעילויות ודיונים', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמדה', metrics: 'נוכחות, מאמץ, גריט', source: 'Grit-S', stage: 1 },
-              { title: 'סדירות', metrics: 'זמני למידה, מניעת דחיינות', source: 'MSLQ', stage: 1 }
-            ]
-          },
-          {
-            id: 'identity',
-            title: 'מסע זהות',
-            icon: <Icons.Compass size={24} />,
-            color: 'from-indigo-400 to-indigo-600',
-            bgSolid: 'bg-indigo-500',
-            bgColor: 'bg-indigo-100',
-            textColor: 'text-indigo-800',
-            subDomains: [
-              { title: 'ערכים', metrics: 'בהירות, הזדהות ומימוש ערכים', source: '', stage: 2 },
-              { title: 'זהות אישית', metrics: '', source: '', stage: 2 }
+              { title: 'מסוגלות עצמית ללמידה', metrics: '', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'תודעת צמיחה', metrics: '', source: 'שאלון דיווח עצמי לתלמיד - ITIS-S', stage: 1 }
             ]
           },
           {
@@ -195,90 +218,167 @@
             bgColor: 'bg-orange-100',
             textColor: 'text-orange-800',
             subDomains: [
-              { title: 'רגש', metrics: 'חיוביות, אופטימיות, שעמום', source: 'PANAS-C', stage: 2 },
-              { title: 'לחץ וחרדה', metrics: 'לחץ לימודי, חרדת בחינות', source: 'MAS-12', stage: 2 }
+              { title: 'צרכי עומק', metrics: 'קשר, שייכות, בטחון, אוטונומיה, בירור מצפן פנימי, תחושת מסוגלות כללית', source: 'שאלוני תצאמ', stage: 1 },
+              { title: 'מוטיבציה', metrics: 'סוג מוטיבציה - פנימית / חיצונית / מתריסה, עוצמת המוטיבציה', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'הנאה מלמידה', metrics: 'רגש חיובי כלפי הלמידה, עניין באתגור אקדמי (need for cognition), זרימה', source: 'שאלון דיוווח עצמי לתלמיד - PANAS-C, NCS-6', stage: 2 },
+              { title: 'שייכות חברתית', metrics: 'מידת השייכות לקבוצה, מידת השייכות לבית ספר, מעורבות חברתית', source: 'שאלון דיווח עצמי לתלמיד - NOD, PSSM-H, דיווח מורה', stage: 2 },
+              { title: 'רגש', metrics: 'חיוביות-שליליות, אופטימיות, שעמום, בלבול, תסכול', source: 'שאלון דיווח עצמי לתלמיד - PANAS-C', stage: 2 },
+              { title: 'לחץ וחרדה', metrics: 'לחץ, רמת חרדה בלמידה, חרדה מתמטית, חרדת שפה זרה, חרדת בחינות', source: 'שאלוני דיווח עצמי לתלמיד - MAS-12, PHCC TAQ-10 ...', stage: 2 }
+            ]
+          },
+          {
+            id: 'srl',
+            title: 'מוכוונות עצמית (SRL) וניהול למידה',
+            icon: <Icons.Activity size={24} />,
+            color: 'from-amber-400 to-amber-600',
+            bgSolid: 'bg-amber-500',
+            bgColor: 'bg-amber-100',
+            textColor: 'text-amber-800',
+            subDomains: [
+              { title: 'מעורבות בלמידה', metrics: 'השתתפות כוללת בפעילויות למידה, השתתפות בדיונים, תגובה במשימות סינכרוניות וא־סינכרוניות', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמדה', metrics: 'נוכחות, מאמץ ועקביות בהשקעה לאורך זמן, השקעת זמן בתרגול, השקעה בתנאים או זמנים מאתגרים, גריט', source: 'נתוני למידה, שאלון דיווח עצמי לתלמיד - Grit-S', stage: 1 },
+              { title: 'סדירות למידה', metrics: 'זמני למידה, דחיינות', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'היעזרות', metrics: 'היעזרות, למידת עמיתים, פתיחות למישוב', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'העדפות אישיות בלמידה', metrics: 'העדפה לסוג תוכן, העדפה ללמידה אישית או שיתופית, מישחוק, העשרה', source: 'דיווח עצמי תלמיד', stage: 1 }
+            ]
+          },
+          {
+            id: 'identity',
+            title: 'מסע זהות',
+            icon: <Icons.Compass size={24} />,
+            color: 'from-indigo-400 to-indigo-600',
+            bgSolid: 'bg-indigo-500',
+            bgColor: 'bg-indigo-100',
+            textColor: 'text-indigo-800',
+            subDomains: [
+              { title: 'ערכים', metrics: 'בהירות הערכים, ההזדהות עם הערכים, מימוש הערכים', source: '', stage: 2 },
+              { title: 'זהות אישית', metrics: '', source: '', stage: 2 }
+            ]
+          },
+          {
+            id: 'cognitive',
+            title: 'מאפיינים קוגניטיביים',
+            icon: <Icons.Brain size={24} />,
+            color: 'from-teal-400 to-teal-600',
+            bgSolid: 'bg-teal-500',
+            bgColor: 'bg-teal-100',
+            textColor: 'text-teal-800',
+            subDomains: [
+              { title: 'קשב וריכוז, היפראקטיביות', metrics: 'רמת קשב, היפראקטיביות', source: '', stage: 2 },
+              { title: 'עיכוב תגובה', metrics: 'עיכוב תגובה', source: '', stage: 2 },
+              { title: 'אינטלגנציה', metrics: 'גורם G (אינטלגנציה כללית), אינטלגנציה רגשית', source: '', stage: 2 },
+              { title: 'זכרון', metrics: 'זכרון עבודה, ידע כללי', source: '', stage: 2 },
+              { title: 'לקויות למידה', metrics: 'דיסלקציה, דיסגרפיה, דיסקלקוליה', source: '', stage: 2 },
+              { title: 'עומס קוגניטיבי', metrics: 'עומס פנימי, עומס חיצוני', source: '', stage: 2 }
+            ]
+          },
+          {
+            id: 'ems_data',
+            title: 'נתוני EMS',
+            icon: <Icons.FileText size={24} />,
+            color: 'from-slate-500 to-slate-700',
+            bgSolid: 'bg-slate-600',
+            bgColor: 'bg-slate-200',
+            textColor: 'text-slate-800',
+            subDomains: [
+              { title: 'מקצועות לימוד, מגמות, קבוצות', metrics: '', source: '', stage: 2 },
+              { title: 'תיק תלמיד', metrics: '', source: '', stage: 2 },
+              { title: 'הערות, תעודות', metrics: '', source: '', stage: 2 },
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת)', source: '', stage: 2 },
+              { title: 'זמן למידה', metrics: 'זמן שהוקדש ללמידה, זמן שהוקדש למשימות, זמן שהוקדש לשיעורי בית, עמידה בזמנים בפועל', source: '', stage: 2 },
+              { title: 'מטרות ויעדים', metrics: 'שאיפות אקדמיות', source: '', stage: 2 }
             ]
           }
         ];
 
-        // --- ADJUSTMENTS DATA (New System) ---
+        // --- ADJUSTMENTS DATA (Interactive) ---
         const adjustmentsData = [
             {
                 id: 'tools',
-                title: 'כלי עזר',
+                title: 'התאמה ברמה של כלי עזר',
                 icon: <Icons.Settings size={24} />,
                 color: 'from-gray-500 to-gray-700',
                 bgSolid: 'bg-gray-600',
                 textColor: 'text-gray-800',
                 subDomains: [
-                    { title: 'מילון / מילה חמה', metrics: 'תמיכה בשפה' },
-                    { title: 'הקראה / מקראה', metrics: 'נגישות שמיעתית' },
-                    { title: 'רמזים', metrics: 'תמיכה בפתרון' }
+                    { title: 'מילון באנגלית', metrics: 'כלי תרגום' },
+                    { title: 'מילה חמה', metrics: 'הבהרת מושגים' },
+                    { title: 'רמז', metrics: 'סיוע בפתרון' },
+                    { title: 'מקראה', metrics: 'טקסט נגיש' },
+                    { title: 'פירוש בתנ"ך', metrics: 'העמקת הבנה' },
+                    { title: 'הקראה', metrics: 'נגישות שמיעתית' }
                 ]
             },
             {
                 id: 'insights',
-                title: 'תובנות (Popups)',
+                title: 'תובנות והמלצות (הודעות קופצות)',
                 icon: <Icons.MessageSquare size={24} />,
                 color: 'from-yellow-500 to-yellow-700',
                 bgSolid: 'bg-yellow-600',
                 textColor: 'text-yellow-900',
                 subDomains: [
-                    { title: 'הצעה להפסקה', metrics: 'ניהול עומס' },
-                    { title: 'הצעה לפיגום', metrics: 'תמיכה בקשיים' },
-                    { title: 'לימוד אסטרטגיה', metrics: 'מיומנות חסרה' }
+                    { title: 'הצעה להפסקה קצרה', metrics: 'ניהול עומס' },
+                    { title: 'הצעה לקבל רמז או פיגום', metrics: 'תמיכה בקושי' },
+                    { title: 'לימוד אסטרטגיה חסרה', metrics: 'השלמת מיומנות' },
+                    { title: 'הכוונה לייצוג אחר', metrics: 'גיוון דרכי למידה' }
                 ]
             },
             {
                 id: 'bot',
-                title: 'בוט דיאלוג',
+                title: 'התאמות דרך עמית למידה (בוט דיאלוג)',
                 icon: <Icons.Bot size={24} />,
                 color: 'from-purple-500 to-purple-700',
                 bgSolid: 'bg-purple-600',
                 textColor: 'text-purple-900',
                 subDomains: [
                     { title: 'שאלה מכוונת', metrics: 'בירור הבנה' },
-                    { title: 'סיוע בטעות', metrics: 'ניתוח שגיאה' },
+                    { title: 'הקפצת ידע קודם', metrics: 'חיבור לידע' },
+                    { title: 'סיוע בפתרון טעות', metrics: 'למידה משגיאות' },
+                    { title: 'הכוונה למציאת הטעות', metrics: 'חשיבה ביקורתית' },
                     { title: 'הרחבת ידע', metrics: 'העמקה' }
                 ]
             },
             {
                 id: 'component',
-                title: 'רמת רכיב',
+                title: 'התאמות ברמת רכיב/בלוק',
                 icon: <Icons.Layers size={24} />,
                 color: 'from-blue-500 to-blue-700',
                 bgSolid: 'bg-blue-600',
                 textColor: 'text-blue-900',
                 subDomains: [
-                    { title: 'דרגות קושי', metrics: 'וריאציות קושי' },
-                    { title: 'ייצוגים שונים', metrics: 'טקסט/וידאו/אודיו' },
-                    { title: 'אורך תוכן', metrics: 'קצר/מלא' }
+                    { title: 'גרסאות בדרגות קושי שונות', metrics: 'דיפרנציאציה' },
+                    { title: 'גרסאות שונות באורך', metrics: 'קצר/מלא' },
+                    { title: 'ייצוגים שונים', metrics: 'טקסט, תרשים, סרטון, אודיו' },
+                    { title: 'משימה בסיסית/העמקה', metrics: 'רמת אתגר' },
+                    { title: 'תרגול עם רמז/ללא רמז', metrics: 'פיגומים' }
                 ]
             },
             {
-                id: 'path_level', // Key ID for interaction
-                title: 'רמת מסלול',
+                id: 'path_level', 
+                title: 'התאמות ברמת מסלול',
                 icon: <Icons.GitBranch size={24} />,
                 color: 'from-red-500 to-red-700',
                 bgSolid: 'bg-red-600',
                 textColor: 'text-red-900',
                 subDomains: [
-                    { title: 'לפי תחומי עניין', metrics: 'פרסונליזציה' },
-                    { title: 'לפי רמת שליטה', metrics: 'בסיס/קידום/העמקה' },
-                    { title: 'לפי סגנון מדיה', metrics: 'העדפות למידה' }
+                    { title: 'מסלול לפי תחומי עניין', metrics: 'מוטיבציה' },
+                    { title: 'מסלול לפי סגנון מדיה', metrics: 'העדפות למידה' },
+                    { title: 'מסלול לפי רמת שליטה', metrics: 'בסיס, קידום, העמקה' },
+                    { title: 'מסלול קצר לעומת מלא', metrics: 'ניהול זמן ועומס' }
                 ]
             },
             {
                 id: 'human',
-                title: 'המלצות מורה',
+                title: 'המלצות למורה או המנטור',
                 icon: <Icons.Users size={24} />,
                 color: 'from-green-500 to-green-700',
                 bgSolid: 'bg-green-600',
                 textColor: 'text-green-900',
                 subDomains: [
-                    { title: 'למידת עמיתים', metrics: 'שידוך חבר' },
-                    { title: 'למידה מונחית', metrics: 'תיווך אנושי' },
-                    { title: 'קבוצות למידה', metrics: 'מבנה קבוצה' }
+                    { title: 'למידה עם חבר מתאים', metrics: 'למידת עמיתים' },
+                    { title: 'מעבר ללמידה מונחית', metrics: 'תיווך אנושי' },
+                    { title: 'התאמת קבוצות למידה', metrics: 'דינמיקה קבוצתית' },
+                    { title: 'בחירת גורם מלווה', metrics: 'מנטורינג' }
                 ]
             }
         ];
@@ -384,15 +484,15 @@
           const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
           
           // State for Right System (Adjustments)
-          const [highlightedAdjustmentId, setHighlightedAdjustmentId] = useState(null); // Which node to "Light up"
-          const [showDescription, setShowDescription] = useState(false); // Show bottom box?
+          const [activeAdjustmentId, setActiveAdjustmentId] = useState(null);
+          const [highlightedAdjustmentId, setHighlightedAdjustmentId] = useState(null);
+          const [showDescription, setShowDescription] = useState(false);
 
           const [stageFilter, setStageFilter] = useState(0); 
 
-          // Interaction Logic: Map Profile Selection to Adjustment Highlight
           useEffect(() => {
               if (activeDomainId === 'knowledge') {
-                  setHighlightedAdjustmentId('path_level'); // Light up "Path Level"
+                  setHighlightedAdjustmentId('path_level');
               } else {
                   setHighlightedAdjustmentId(null);
                   setShowDescription(false);
@@ -418,18 +518,12 @@
             window.addEventListener('resize', up); up(); return () => window.removeEventListener('resize', up);
           }, []);
 
-          // Geometry Constants
           const minDim = Math.min(dimensions.width, dimensions.height);
-          
-          // --- Center Points ---
-          // Use responsive math to separate the two systems comfortably
           const leftCenterX = dimensions.width < 1000 ? dimensions.width / 2 : dimensions.width * 0.35;
           const leftCenterY = dimensions.height / 2;
-          
-          const rightCenterX = dimensions.width < 1000 ? dimensions.width / 2 + 800 : dimensions.width * 0.75; // Far away on mobile so you pan to it, or side-by-side on desktop
+          const rightCenterX = dimensions.width < 1000 ? dimensions.width / 2 + 800 : dimensions.width * 0.75; 
           const rightCenterY = dimensions.height / 2;
 
-          // Node Sizes
           const MAIN_RADIUS = 200; 
           const SUB_RADIUS_OFFSET = 140; 
           const CENTER_SIZE = 110;
@@ -437,7 +531,9 @@
           const SUB_NODE_SIZE = 65;
 
           const handleAdjustmentClick = (adjId) => {
-              // Specific logic: Only if Path Level is clicked AND it is currently highlighted
+              // Toggle logic for adjustment expansion
+              setActiveAdjustmentId(prev => prev === adjId ? null : adjId);
+              
               if (adjId === 'path_level' && highlightedAdjustmentId === 'path_level') {
                   setShowDescription(!showDescription);
               }
@@ -456,12 +552,10 @@
                   <>
                     {/* --- SYSTEM 1: LEARNER PROFILE (LEFT) --- */}
                     
-                    {/* Background Aura */}
                     <div className="absolute rounded-full blur-[80px] opacity-20 pointer-events-none transition-colors duration-1000"
                          style={{ width: '600px', height: '600px', left: leftCenterX, top: leftCenterY, transform: 'translate(-50%, -50%)', backgroundColor: activeDomainId ? '#dbeafe' : '#f1f5f9' }}>
                     </div>
 
-                    {/* Center Node */}
                     <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-50 text-slate-800 cursor-pointer hover:shadow-xl transition-all duration-300"
                          style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: leftCenterX, top: leftCenterY, transform: 'translate(-50%, -50%)' }}
                          onClick={(e) => { e.stopPropagation(); setActiveDomainId(null); }}>
@@ -522,9 +616,9 @@
 
                     {/* --- SYSTEM 2: ADJUSTMENTS (RIGHT) --- */}
                     
-                    {/* Adjustments Center */}
                     <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-100 text-slate-800"
-                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: rightCenterX, top: rightCenterY, transform: 'translate(-50%, -50%)' }}>
+                         style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: rightCenterX, top: rightCenterY, transform: 'translate(-50%, -50%)' }}
+                         onClick={(e) => { e.stopPropagation(); setActiveAdjustmentId(null); }}>
                        <Icons.Settings size={30} className="text-gray-400 mb-1 opacity-50"/>
                        <h2 className="font-extrabold text-center leading-none text-sm">מערכת<br/>התאמות</h2>
                     </div>
@@ -533,10 +627,11 @@
                         const angleDeg = (360 / adjustmentsData.length) * i - 90;
                         const pos = calculatePosition(angleDeg, MAIN_RADIUS, rightCenterX, rightCenterY);
                         const isHighlighted = highlightedAdjustmentId === adj.id;
+                        const isActive = activeAdjustmentId === adj.id;
 
                         return (
                             <React.Fragment key={adj.id}>
-                                <Line x1={rightCenterX} y1={rightCenterY} x2={pos.x} y2={pos.y} isActive={true} />
+                                <Line x1={rightCenterX} y1={rightCenterY} x2={pos.x} y2={pos.y} isActive={isActive || isHighlighted} />
                                 <NodeButton 
                                     title={adj.title} 
                                     metrics="" source="" 
@@ -546,6 +641,30 @@
                                     isHighlighted={isHighlighted}
                                 />
                                 {isHighlighted && <div className="absolute text-xs font-bold text-orange-600 bg-white px-2 py-1 rounded shadow-sm animate-bounce" style={{ left: pos.x, top: pos.y - 60, transform: 'translateX(-50%)' }}>לחץ עליי!</div>}
+
+                                {/* Adjustment Sub-Domains (Opening outward) */}
+                                {isActive && adj.subDomains.map((sub, j) => {
+                                    const spread = 80;
+                                    const startAngle = angleDeg - (spread / 2);
+                                    const step = adj.subDomains.length > 1 ? spread / (adj.subDomains.length - 1) : 0;
+                                    const subAngle = adj.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
+                                    const subPos = calculatePosition(subAngle, MAIN_RADIUS + SUB_RADIUS_OFFSET, rightCenterX, rightCenterY);
+                                    const isExpanded = selectedSubDomainId === sub.title;
+
+                                    return (
+                                        <React.Fragment key={j}>
+                                            <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
+                                            <NodeButton 
+                                                title={sub.title} 
+                                                metrics={sub.metrics} 
+                                                source="" 
+                                                colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
+                                                onClick={(e) => { e.stopPropagation(); setSelectedSubDomainId(isExpanded ? null : sub.title); }}
+                                                pos={subPos} size={SUB_NODE_SIZE} delay={j * 50} expanded={isExpanded}
+                                            />
+                                        </React.Fragment>
+                                    );
+                                })}
                             </React.Fragment>
                         );
                     })}
@@ -554,7 +673,7 @@
                  )}
                 </PanZoomWrapper>
 
-                {/* --- DESCRIPTION BOX (Fixed Bottom) --- */}
+                {/* --- DESCRIPTION BOX --- */}
                 {showDescription && (
                     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-2xl bg-white/95 backdrop-blur-md border-t-4 border-orange-500 rounded-lg shadow-2xl p-6 z-[100] animate-fadeIn">
                         <button onClick={() => setShowDescription(false)} className="absolute top-2 left-2 text-gray-400 hover:text-gray-600"><Icons.X size={20}/></button>
