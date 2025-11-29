@@ -100,9 +100,9 @@
             borderColor: 'border-blue-200',
             textColor: 'text-blue-800',
             subDomains: [
-              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי של ההורים, מצב סוציואקונומי', source: 'נתוני בית ספר', stage: 1 },
+              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי של ההורים, מצב סוציואקונומי (מדד טיפוח של בי"ס)', source: 'נתוני בית ספר', stage: 1 },
               { title: 'תחומי עניין', metrics: 'תחביבים, תחומי עניין אישיים, כישורים מיוחדים', source: 'דיווח עצמי תלמיד', stage: 1 },
-              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות', source: 'נתוני בית ספר', stage: 2 }
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת).', source: 'נתוני בית ספר', stage: 2 }
             ]
           },
           {
@@ -130,8 +130,8 @@
             textColor: 'text-emerald-800',
             subDomains: [
               { title: 'רמת שליטה בידע ספציפי', metrics: 'ידע עולם, ידע קודם רלוונטי', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמודדות עם קושי', metrics: 'התמודדות עם רמת קושי של שאלה', source: 'נתוני למידה', stage: 1 },
-              { title: 'רמת חשיבה', metrics: 'רמת חשיבה (זכירה, הבנה, יישום, אנליזה)', source: 'נתוני למידה', stage: 1 }
+              { title: 'התמודדות עם רמת קושי של שאלה', metrics: '', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמודדות עם רמת חשיבה', metrics: 'רמת חשיבה', source: 'נתוני למידה', stage: 1 }
             ]
           },
           {
@@ -161,11 +161,11 @@
                 isCategory: true,
                 stage: 2,
                 children: [
-                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות, הבעה בכתב ובעל פה', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות והיסק ממקור בודד/מקורות מרובים, הבעה בכתב, הבעה בעל פה', source: 'נתוני למידה', stage: 2 },
                   { title: 'חשיבה ביקורתית', metrics: 'טיעון', source: 'נתוני למידה', stage: 2 },
-                  { title: 'חשיבה יצירתית', metrics: 'סקרנות, גמישות מחשבתית, הקשרים חדשים', source: 'נתוני למידה', stage: 2 },
-                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול, שיתופיות, יצירת תוכן דיגיטלי', source: 'נתוני למידה', stage: 2 },
-                  { title: 'אוריינות מידע', metrics: 'איתור, הערכה, ארגון ושימוש במידע', source: 'נתוני למידה', stage: 2 }
+                  { title: 'חשיבה יצירתית', metrics: 'סקרנות ומקוריות, גמישות מחשבתית, יצירת הקשרים חדשים', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול ופתרון בעיות, שיתופיות, יצירת תוכן במדיה הדיגיטלית', source: 'נתוני למידה', stage: 2 },
+                  { title: 'אוריינות מידע', metrics: 'איתור מידע, הערכת מידע, ארגון מידע, שימוש במידע, הצגת מידע (כולל מיזוג מידע, השוואה, התמצאות במפה)', source: 'נתוני למידה', stage: 2 }
                 ]
               },
               {
@@ -183,10 +183,10 @@
                 isCategory: true,
                 stage: 1, 
                 children: [
-                   { title: 'תכנון למידה', metrics: 'תכנון מטרות, אסטרטגיות, זמן, משאבים', source: 'יומן למידה / MSLQ', stage: 2 },
-                   { title: 'ויסות עצמי', metrics: 'ניטור הבנה, בקרה, תיקון אי-הבנה', source: 'MSLQ', stage: 2 },
-                   { title: 'אסטרטגיות למידה', metrics: 'למידה שטחית/מעמיקה, שינון, עיבוד', source: 'MSLQ, RSPQ-2F', stage: 2 },
-                   { title: 'מודעות לידע', metrics: 'שיפוט למידה, בטחון בתשובה (JOL, FOK)', source: 'JOL, JOU', stage: 1 }
+                   { title: 'תכנון למידה', metrics: 'תכנון מטרות, תכנון אסטרטגיות, תכנון זמן, תכנון משאבים וסביבת למידה', source: 'יומן למידה / שאלון דיווח עצמי לתלמיד - MSLQ', stage: 2 },
+                   { title: 'ויסות עצמי מטא-קוגניטיבי', metrics: 'תכנון, ניטור ההבנה, ויסות ובקרה של הלמידה, הבהרה ותיקון כשיש אי־הבנה.', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 2 },
+                   { title: 'שימוש באסטרטגיות למידה', metrics: 'למידה שטחית / מעמיקה, שינון, עיבוד, ארגון, חשיבה ביקורתית, חשיבה רפלקטיבית', source: 'נתוני למידה / יומן למידה / שאלון דיווח עצמי לתלמיד - MSLQ, RSPQ-2F', stage: 2 },
+                   { title: 'מודעות לידע', metrics: 'שיפוט למידה, שיפוט הבנה, בטחון בתשובה, תחושת ידע', source: 'JOL, JOU, RCJ, FOK שאלות מסוג', stage: 1 }
                 ]
               }
             ]
@@ -201,8 +201,8 @@
             borderColor: 'border-cyan-200',
             textColor: 'text-cyan-800',
             subDomains: [
-              { title: 'מסוגלות עצמית ללמידה', metrics: '', source: 'MSLQ', stage: 1 },
-              { title: 'תודעת צמיחה', metrics: '', source: 'ITIS-S', stage: 1 }
+              { title: 'מסוגלות עצמית ללמידה', metrics: '', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'תודעת צמיחה', metrics: '', source: 'שאלון דיווח עצמי לתלמיד - ITIS-S', stage: 1 }
             ]
           },
           {
@@ -215,17 +215,18 @@
             borderColor: 'border-orange-200',
             textColor: 'text-orange-800',
             subDomains: [
-              { title: 'צרכי עומק', metrics: 'קשר, שייכות, בטחון, אוטונומיה', source: 'שאלוני תצאמ', stage: 1 },
-              { title: 'מוטיבציה', metrics: 'פנימית/חיצונית, עוצמה', source: 'MSLQ', stage: 1 },
-              { title: 'הנאה מלמידה', metrics: 'רגש חיובי, עניין באתגור', source: 'PANAS-C', stage: 2 },
-              { title: 'שייכות חברתית', metrics: 'שייכות לקבוצה/בי"ס', source: 'PSSM-H', stage: 2 },
-              { title: 'רגש', metrics: 'חיוביות, אופטימיות, שעמום', source: 'PANAS-C', stage: 2 },
-              { title: 'לחץ וחרדה', metrics: 'לחץ לימודי, חרדת בחינות', source: 'MAS-12', stage: 2 }
+              { title: 'צרכי עומק', metrics: 'קשר, שייכות, בטחון, אוטונומיה, בירור מצפן פנימי, תחושת מסוגלות כללית', source: 'שאלוני תצאמ', stage: 1 },
+              { title: 'מוטיבציה', metrics: 'סוג מוטיבציה - פנימית / חיצונית / מתריסה, עוצמת המוטיבציה', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'הנאה מלמידה', metrics: 'רגש חיובי כלפי הלמידה, עניין באתגור אקדמי (need for cognition), זרימה', source: 'שאלון דיוווח עצמי לתלמיד - PANAS-C, NCS-6', stage: 2 },
+              { title: 'שייכות חברתית', metrics: 'מידת השייכות לקבוצה, מידת השייכות לבית ספר, מעורבות חברתית', source: 'שאלון דיווח עצמי לתלמיד - NOD, PSSM-H, דיווח מורה', stage: 2 },
+              { title: 'רגש', metrics: 'חיוביות-שליליות, אופטימיות, שעמום, בלבול, תסכול', source: 'שאלון דיווח עצמי לתלמיד - PANAS-C', stage: 2 },
+              { title: 'לחץ וחרדה', metrics: 'לחץ, רמת חרדה בלמידה, חרדה מתמטית, חרדת שפה זרה, חרדת בחינות', source: 'שאלוני דיווח עצמי לתלמיד - MAS-12, PHCC TAQ-10 ...', stage: 2 }
             ]
           },
           {
             id: 'srl',
-            title: 'SRL וניהול למידה',
+            title: 'מוכוונות עצמית (SRL)',
+            subtitle: 'וניהול למידה',
             icon: <Icons.Activity size={24} />,
             color: 'from-amber-400 to-amber-600',
             bgSolid: 'bg-amber-500',
@@ -233,11 +234,11 @@
             borderColor: 'border-amber-200',
             textColor: 'text-amber-800',
             subDomains: [
-              { title: 'מעורבות בלמידה', metrics: 'השתתפות בפעילויות ודיונים', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמדה', metrics: 'נוכחות, מאמץ, גריט (Grit)', source: 'Grit-S', stage: 1 },
-              { title: 'סדירות למידה', metrics: 'זמני למידה, מניעת דחיינות', source: 'MSLQ', stage: 1 },
-              { title: 'היעזרות', metrics: 'בקשת עזרה, למידת עמיתים', source: 'MSLQ', stage: 1 },
-              { title: 'העדפות אישיות', metrics: 'העדפות תוכן, למידה שיתופית/אישית', source: 'דיווח עצמי', stage: 1 }
+              { title: 'מעורבות בלמידה', metrics: 'השתתפות כוללת בפעילויות למידה, השתתפות בדיונים, תגובה במשימות סינכרוניות וא־סינכרוניות', source: 'נתוני למידה', stage: 1 },
+              { title: 'התמדה', metrics: 'נוכחות, מאמץ ועקביות בהשקעה לאורך זמן, השקעת זמן בתרגול, השקעה בתנאים או זמנים מאתגרים, גריט', source: 'נתוני למידה, שאלון דיווח עצמי לתלמיד - Grit-S', stage: 1 },
+              { title: 'סדירות למידה', metrics: 'זמני למידה, דחיינות', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'היעזרות', metrics: 'היעזרות, למידת עמיתים, פתיחות למישוב', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
+              { title: 'העדפות אישיות בלמידה', metrics: 'העדפה לסוג תוכן, העדפה ללמידה אישית או שיתופית, מישחוק, העשרה', source: 'דיווח עצמי תלמיד', stage: 1 }
             ]
           },
           {
@@ -250,13 +251,13 @@
             borderColor: 'border-indigo-200',
             textColor: 'text-indigo-800',
             subDomains: [
-              { title: 'ערכים', metrics: 'בהירות, הזדהות ומימוש ערכים', source: '', stage: 2 },
+              { title: 'ערכים', metrics: 'בהירות הערכים, ההזדהות עם הערכים, מימוש הערכים', source: '', stage: 2 },
               { title: 'זהות אישית', metrics: '', source: '', stage: 2 }
             ]
           },
           {
             id: 'cognitive',
-            title: 'קוגניציה',
+            title: 'מאפיינים קוגניטיביים',
             icon: <Icons.Brain size={24} />,
             color: 'from-teal-400 to-teal-600',
             bgSolid: 'bg-teal-500',
@@ -264,12 +265,12 @@
             borderColor: 'border-teal-200',
             textColor: 'text-teal-800',
             subDomains: [
-              { title: 'קשב וריכוז', metrics: 'רמת קשב, היפראקטיביות', source: '', stage: 2 },
-              { title: 'עיכוב תגובה', metrics: 'אינהיביציה', source: '', stage: 2 },
-              { title: 'אינטלגנציה', metrics: 'גורם G, רגשית', source: '', stage: 2 },
+              { title: 'קשב וריכוז, היפראקטיביות', metrics: 'רמת קשב, היפראקטיביות', source: '', stage: 2 },
+              { title: 'עיכוב תגובה', metrics: 'עיכוב תגובה', source: '', stage: 2 },
+              { title: 'אינטלגנציה', metrics: 'גורם G (אינטלגנציה כללית), אינטלגנציה רגשית', source: '', stage: 2 },
               { title: 'זכרון', metrics: 'זכרון עבודה, ידע כללי', source: '', stage: 2 },
-              { title: 'לקויות למידה', metrics: 'דיסלקציה, דיסגרפיה', source: '', stage: 2 },
-              { title: 'עומס קוגניטיבי', metrics: 'פנימי/חיצוני', source: '', stage: 2 }
+              { title: 'לקויות למידה', metrics: 'דיסלקציה, דיסגרפיה, דיסקלקוליה', source: '', stage: 2 },
+              { title: 'עומס קוגניטיבי', metrics: 'עומס פנימי, עומס חיצוני', source: '', stage: 2 }
             ]
           },
           {
@@ -282,11 +283,11 @@
             borderColor: 'border-slate-300',
             textColor: 'text-slate-800',
             subDomains: [
-              { title: 'מקצועות ומגמות', metrics: '', source: '', stage: 2 },
+              { title: 'מקצועות לימוד, מגמות, קבוצות', metrics: '', source: '', stage: 2 },
               { title: 'תיק תלמיד', metrics: '', source: '', stage: 2 },
               { title: 'הערות, תעודות', metrics: '', source: '', stage: 2 },
-              { title: 'התאמות', metrics: 'פדגוגיות וטכנולוגיות', source: '', stage: 2 },
-              { title: 'זמן למידה', metrics: 'זמן במשימות/ש"ב', source: '', stage: 2 },
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת)', source: '', stage: 2 },
+              { title: 'זמן למידה', metrics: 'זמן שהוקדש ללמידה, זמן שהוקדש למשימות, זמן שהוקדש לשיעורי בית, עמידה בזמנים בפועל', source: '', stage: 2 },
               { title: 'מטרות ויעדים', metrics: 'שאיפות אקדמיות', source: '', stage: 2 }
             ]
           }
@@ -375,19 +376,19 @@
                             {isCategory && <div className="absolute -bottom-1 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>}
                         </>
                     ) : (
-                        <div className="flex flex-col w-full h-full p-6 text-right relative animate-fadeIn">
+                        <div className="flex flex-col w-full h-full p-6 text-center items-center justify-center relative animate-fadeIn">
                             <button className="absolute top-2 left-3 p-2 text-gray-400 hover:text-gray-600 transition-colors" title="סגור">
                                 <Icons.X size={20} />
                             </button>
                             
-                            <div className="flex-shrink-0 mb-4 pr-2 border-r-4 border-blue-500">
+                            <div className="flex-shrink-0 mb-4 pb-2 border-b-2 border-blue-500 w-2/3">
                                 <h3 className={`text-xl font-bold ${textColor}`}>{title}</h3>
                             </div>
                             
-                            <div className="flex-1 overflow-y-auto custom-scrollbar pl-2">
+                            <div className="flex-1 overflow-y-auto custom-scrollbar w-full px-2">
                                 {metrics && (
                                     <div className="mb-4">
-                                        <div className="flex items-center gap-2 mb-1 text-gray-500 font-bold text-xs">
+                                        <div className="flex items-center justify-center gap-2 mb-1 text-gray-500 font-bold text-xs">
                                             <Icons.Activity size={14} /><span>מדדים</span>
                                         </div>
                                         <p className="text-gray-700 text-sm leading-relaxed bg-slate-50 p-2 rounded">{metrics}</p>
@@ -395,10 +396,10 @@
                                 )}
                                 {source && (
                                     <div>
-                                        <div className="flex items-center gap-2 mb-1 text-gray-400 font-bold text-[10px] uppercase">
+                                        <div className="flex items-center justify-center gap-2 mb-1 text-gray-400 font-bold text-[10px] uppercase">
                                             <Icons.Database size={12} /><span>מקור נתונים</span>
                                         </div>
-                                        <div className="flex items-center">
+                                        <div className="flex items-center justify-center">
                                             <div className={`h-3 w-1 ${bgSolid} rounded-full ml-2 opacity-50`}></div>
                                             <p className="text-gray-500 text-xs">{source}</p>
                                         </div>
