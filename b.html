@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>פרופיל לומד והתאמות - מסונן</title>
+    <title>פרופיל לומד והתאמות</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,6 +25,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
         .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-fadeOut { animation: fadeOut 0.5s ease-out forwards; }
         
         /* Fly Out Animation */
         .animate-flyOut {
@@ -44,13 +45,16 @@
           }
         }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+
         /* Cursor styles */
         .cursor-grab { cursor: grab; }
         .cursor-grabbing { cursor: grabbing; }
         
         /* Smooth sizing transition */
-        .transition-size {
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        .transition-all-ease {
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
     </style>
 </head>
@@ -261,23 +265,6 @@
               { title: 'לקויות למידה', metrics: 'דיסלקציה, דיסגרפיה, דיסקלקוליה', source: '', stage: 2 },
               { title: 'עומס קוגניטיבי', metrics: 'עומס פנימי, עומס חיצוני', source: '', stage: 2 }
             ]
-          },
-          {
-            id: 'ems_data',
-            title: 'נתוני EMS',
-            icon: <Icons.FileText size={24} />,
-            color: 'from-slate-500 to-slate-700',
-            bgSolid: 'bg-slate-600',
-            bgColor: 'bg-slate-200',
-            textColor: 'text-slate-800',
-            subDomains: [
-              { title: 'מקצועות לימוד, מגמות, קבוצות', metrics: '', source: '', stage: 2 },
-              { title: 'תיק תלמיד', metrics: '', source: '', stage: 2 },
-              { title: 'הערות, תעודות', metrics: '', source: '', stage: 2 },
-              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת)', source: '', stage: 2 },
-              { title: 'זמן למידה', metrics: 'זמן שהוקדש ללמידה, זמן שהוקדש למשימות, זמן שהוקדש לשיעורי בית, עמידה בזמנים בפועל', source: '', stage: 2 },
-              { title: 'מטרות ויעדים', metrics: 'שאיפות אקדמיות', source: '', stage: 2 }
-            ]
           }
         ];
 
@@ -285,7 +272,7 @@
         const adjustmentsData = [
             {
                 id: 'tools',
-                title: 'כלי עזר',
+                title: 'התאמה ברמה של כלי עזר',
                 icon: <Icons.Settings size={24} />,
                 color: 'from-gray-500 to-gray-700',
                 bgSolid: 'bg-gray-600',
@@ -301,7 +288,7 @@
             },
             {
                 id: 'insights',
-                title: 'תובנות (הודעות קופצות)',
+                title: 'תובנות והמלצות (הודעות קופצות)',
                 icon: <Icons.MessageSquare size={24} />,
                 color: 'from-yellow-500 to-yellow-700',
                 bgSolid: 'bg-yellow-600',
@@ -315,7 +302,7 @@
             },
             {
                 id: 'bot',
-                title: 'בוט דיאלוג',
+                title: 'התאמות דרך עמית למידה (בוט דיאלוג)',
                 icon: <Icons.Bot size={24} />,
                 color: 'from-purple-500 to-purple-700',
                 bgSolid: 'bg-purple-600',
@@ -330,7 +317,7 @@
             },
             {
                 id: 'component',
-                title: 'רמת רכיב/בלוק',
+                title: 'התאמות ברמת רכיב/בלוק',
                 icon: <Icons.Layers size={24} />,
                 color: 'from-blue-500 to-blue-700',
                 bgSolid: 'bg-blue-600',
@@ -345,7 +332,7 @@
             },
             {
                 id: 'path_level', 
-                title: 'רמת מסלול',
+                title: 'התאמות ברמת מסלול',
                 icon: <Icons.GitBranch size={24} />,
                 color: 'from-red-500 to-red-700',
                 bgSolid: 'bg-red-600',
@@ -359,7 +346,7 @@
             },
             {
                 id: 'human',
-                title: 'המלצות למורה',
+                title: 'המלצות למורה או המנטור',
                 icon: <Icons.Users size={24} />,
                 color: 'from-green-500 to-green-700',
                 bgSolid: 'bg-green-600',
@@ -374,6 +361,7 @@
         ];
 
         // --- MAPPING CONFIGURATION ---
+        // Maps Profile Domain ID -> Array of Adjustment IDs
         const domainToAdjustmentMap = {
             'knowledge': ['path_level'],
             'skills': ['component'],
@@ -382,7 +370,6 @@
             'personal': ['tools', 'path_level'],
             'identity': ['path_level'],
             'cognitive': ['component', 'tools'],
-            'ems_data': ['human', 'path_level'],
             'personality': ['human', 'bot'],
             'self_beliefs': ['insights', 'bot']
         };
@@ -406,7 +393,7 @@
                   </button>
                 ))}
               </div>
-              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800"><Icons.Compass size={18} /></button>
+              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800" title="אפס תצוגה"><Icons.Compass size={18} /></button>
               <div className="px-2 py-1 bg-white/50 rounded text-[10px] text-gray-400 font-mono">{Math.round(scale * 100)}%</div>
             </div>
         );
@@ -422,18 +409,19 @@
           );
         };
 
-        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false }) => {
+        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false, isVisible = true }) => {
             const currentSize = expanded ? 320 : size;
             const currentZ = expanded ? 100 : 40;
             
             const style = {
                 '--start-x': `${pos.x}px`, '--start-y': `${pos.y}px`, '--end-x': `${pos.x}px`, '--end-y': `${pos.y}px`,
-                width: currentSize, height: currentSize, left: pos.x, top: pos.y, zIndex: currentZ, animationDelay: `${delay}ms`
+                width: currentSize, height: currentSize, left: pos.x, top: pos.y, zIndex: currentZ, animationDelay: `${delay}ms`,
+                opacity: isVisible ? 1 : 0.1, pointerEvents: isVisible ? 'auto' : 'none', filter: isVisible ? 'none' : 'grayscale(100%) blur(2px)'
             };
 
             return (
                 <button onClick={onClick} style={style}
-                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center transition-size cursor-pointer
+                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center transition-all-ease cursor-pointer
                                 ${expanded ? 'bg-white ring-4 ring-offset-2 ring-blue-100 shadow-2xl' : 'hover:border-blue-400 hover:scale-105 animate-flyOut forwards'}
                                 ${(!expanded && isCategory) ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'} `}>
                     {!expanded ? (
@@ -575,6 +563,7 @@
         const AdjustmentSystem = ({ width, height, activeDomainId }) => {
             const [activeAdjustmentId, setActiveAdjustmentId] = useState(null);
             const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
+            const [isMessageVisible, setIsMessageVisible] = useState(true);
 
             const centerX = width / 2;
             const centerY = height / 2;
@@ -584,16 +573,9 @@
             const MAIN_NODE_SIZE = 80;
             const SUB_NODE_SIZE = 65;
 
-            // Derived relevant adjustments
             const relevantIds = useMemo(() => {
                 return activeDomainId ? (domainToAdjustmentMap[activeDomainId] || []) : [];
             }, [activeDomainId]);
-
-            // Filter adjustments to show
-            const visibleAdjustments = useMemo(() => {
-                if (!activeDomainId) return adjustmentsData; // Show all if nothing selected
-                return adjustmentsData.filter(adj => relevantIds.includes(adj.id));
-            }, [relevantIds, activeDomainId]);
 
             const handleAdjustmentClick = (adjId) => {
                 setActiveAdjustmentId(prev => prev === adjId ? null : adjId);
@@ -602,29 +584,44 @@
 
             return (
                 <>
+                    {/* Instructions Overlay */}
+                    {isMessageVisible && (
+                        <div className="absolute top-12 left-1/2 -translate-x-1/2 z-30 bg-orange-100 text-orange-900 border border-orange-200 px-4 py-2 rounded-lg shadow-md flex items-center gap-3 animate-fadeIn w-max max-w-[90%]">
+                            <Icons.Info size={18} />
+                            <span className="text-xs font-medium">לחצו על המאפיינים בפרופיל הלומד על מנת לראות אילו סוגי התאמות ניתן לבצע עבורם</span>
+                            <button onClick={() => setIsMessageVisible(false)} className="text-orange-700 hover:text-orange-900"><Icons.X size={16} /></button>
+                        </div>
+                    )}
+
                     <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-100 text-slate-800"
                          style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: centerX, top: centerY, transform: 'translate(-50%, -50%)' }}>
                        <Icons.Settings size={30} className="text-gray-400 mb-1 opacity-50"/>
                        <h2 className="font-extrabold text-center leading-none text-sm">התאמות</h2>
                     </div>
 
-                    {visibleAdjustments.map((adj, i) => {
-                        const angleDeg = (360 / visibleAdjustments.length) * i - 90;
+                    {adjustmentsData.map((adj, i) => {
+                        // Original Position calculation (always based on full list)
+                        const angleDeg = (360 / adjustmentsData.length) * i - 90;
                         const pos = calculatePosition(angleDeg, MAIN_RADIUS, centerX, centerY);
+                        
+                        // Check visibility based on profile selection
+                        const isVisible = !activeDomainId || relevantIds.includes(adj.id);
                         const isActive = activeAdjustmentId === adj.id;
 
                         return (
                             <React.Fragment key={adj.id}>
-                                <Line x1={centerX} y1={centerY} x2={pos.x} y2={pos.y} isActive={isActive} />
+                                {isVisible && <Line x1={centerX} y1={centerY} x2={pos.x} y2={pos.y} isActive={isActive || isVisible} />}
+                                
                                 <NodeButton 
                                     title={adj.title} 
                                     metrics="" source="" 
                                     colorClass={adj.color} textColor={adj.textColor} bgSolid={adj.bgSolid}
-                                    onClick={(e) => { e.stopPropagation(); handleAdjustmentClick(adj.id); }}
+                                    onClick={(e) => { e.stopPropagation(); if(isVisible) handleAdjustmentClick(adj.id); }}
                                     pos={pos} size={MAIN_NODE_SIZE} delay={i * 50} isCategory={false} expanded={false}
+                                    isVisible={isVisible}
                                 />
                                 
-                                {isActive && adj.subDomains.map((sub, j) => {
+                                {isActive && isVisible && adj.subDomains.map((sub, j) => {
                                     const spread = 80, startAngle = angleDeg - (spread / 2);
                                     const step = adj.subDomains.length > 1 ? spread / (adj.subDomains.length - 1) : 0;
                                     const subAngle = adj.subDomains.length === 1 ? angleDeg : startAngle + (step * j);
@@ -695,7 +692,7 @@
                   
                   {/* --- RIGHT SIDE: LEARNER PROFILE (50%) --- */}
                   <div className="w-1/2 h-full relative border-l-2 border-slate-200 bg-white">
-                      <div className="absolute top-2 right-2 z-10 bg-blue-50 text-blue-800 text-[10px] px-2 py-1 rounded-full font-bold">פרופיל לומד</div>
+                      <div className="absolute top-2 right-2 z-10 bg-blue-50 text-blue-800 text-[10px] px-2 py-1 rounded-full font-bold shadow-sm border border-blue-100">פרופיל לומד</div>
                       <PanZoomWrapper onResetRef={profileZoomRef}>
                           {(scale) => (
                               <ProfileSystem 
@@ -712,7 +709,7 @@
 
                   {/* --- LEFT SIDE: ADJUSTMENTS (50%) --- */}
                   <div className="w-1/2 h-full relative bg-slate-50">
-                      <div className="absolute top-2 left-2 z-10 bg-orange-50 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold">התאמות</div>
+                      <div className="absolute top-2 left-2 z-10 bg-orange-50 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold shadow-sm border border-orange-100">התאמות</div>
                       <PanZoomWrapper onResetRef={adjustmentsZoomRef}>
                           {(scale) => (
                               <AdjustmentSystem 
