@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>פרופיל לומד הוליסטי - עיגולים מתרחבים</title>
-    
+    <title>פרופיל לומד הוליסטי</title>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
+
     <!-- Babel (for JSX) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
+
         body { font-family: 'Heebo', sans-serif; user-select: none; }
-        
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        
+
         .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         /* Fly Out Animation */
         .animate-flyOut {
           animation: flyOut 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -47,10 +48,10 @@
         /* Cursor styles for Pan/Zoom */
         .cursor-grab { cursor: grab; }
         .cursor-grabbing { cursor: grabbing; }
-        
+
         /* Smooth sizing transition */
         .transition-size {
-            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
                         height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
                         left 0.4s ease, top 0.4s ease,
                         transform 0.4s ease,
@@ -76,20 +77,19 @@
             Brain: (p) => <IconBase {...p}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></IconBase>,
             Heart: (p) => <IconBase {...p}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></IconBase>,
             Activity: (p) => <IconBase {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></IconBase>,
-            Target: (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></IconBase>,
             Compass: (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></IconBase>,
             Zap: (p) => <IconBase {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></IconBase>,
-            Sparkles: (p) => <IconBase {...p}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5h4"/><path d="M3 7.502h4"/><path d="M7 3.502v4"/></IconBase>,
+            Sparkles: (p) => <IconBase {...p}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5h4"/></IconBase>,
             X: (p) => <IconBase {...p}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></IconBase>,
             Database: (p) => <IconBase {...p}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></IconBase>,
-            Info: (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></IconBase>,
-            FileText: (p) => <IconBase {...p}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></IconBase>,
-            Users: (p) => <IconBase {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></IconBase>,
-            PenTool: (p) => <IconBase {...p}><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></IconBase>
+            FileText: (p) => <IconBase {...p}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></IconBase>,
+            Rocket: (p) => <IconBase {...p}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></IconBase>,
+            Award: (p) => <IconBase {...p}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></IconBase>,
+            Gem: (p) => <IconBase {...p}><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></IconBase>,
         };
 
-        // --- DATA STRUCTURE ---
-        const rawData = [
+        // --- DATA: 720 PROFILE (default view) ---
+        const data720 = [
           {
             id: 'personal',
             title: 'נתונים אישיים',
@@ -97,25 +97,10 @@
             color: 'from-blue-400 to-blue-600',
             bgSolid: 'bg-blue-500',
             bgColor: 'bg-blue-100',
-            borderColor: 'border-blue-200',
             textColor: 'text-blue-800',
             subDomains: [
-              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי של ההורים, מצב סוציואקונומי (מדד טיפוח של בי"ס)', source: 'נתוני בית ספר', stage: 1 },
-              { title: 'תחומי עניין', metrics: 'תחביבים, תחומי עניין אישיים, כישורים מיוחדים', source: 'דיווח עצמי תלמיד', stage: 1 },
-              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת).', source: 'נתוני בית ספר', stage: 2 }
-            ]
-          },
-          {
-            id: 'personality',
-            title: 'מאפיינים אישיותיים',
-            icon: <Icons.Sparkles size={24} />,
-            color: 'from-purple-400 to-purple-600',
-            bgSolid: 'bg-purple-500',
-            bgColor: 'bg-purple-100',
-            borderColor: 'border-purple-200',
-            textColor: 'text-purple-800',
-            subDomains: [
-              { title: 'תכונות אישיות', metrics: 'פתיחות להתנסויות, מוחצנות, נועם הליכות, מצפוניות, יציבות רגשית', source: 'שאלון דיווח עצמי לתלמיד - TIPI', stage: 2 }
+              { title: 'נתונים דמוגרפיים', metrics: 'גיל, מגדר, שכבת גיל, שפת אם, סטטוס משפחתי של ההורים, מצב סוציואקונומי (מדד טיפוח של בי"ס)', source: 'נתוני בית ספר' },
+              { title: 'תחומי עניין', metrics: 'תחביבים, תחומי עניין אישיים, כישורים מיוחדים', source: 'דיווח עצמי תלמיד' }
             ]
           },
           {
@@ -126,12 +111,11 @@
             color: 'from-emerald-400 to-emerald-600',
             bgSolid: 'bg-emerald-500',
             bgColor: 'bg-emerald-100',
-            borderColor: 'border-emerald-200',
             textColor: 'text-emerald-800',
             subDomains: [
-              { title: 'רמת שליטה בידע ספציפי', metrics: 'ידע עולם, ידע קודם רלוונטי', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמודדות עם רמת קושי של שאלה', metrics: '', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמודדות עם רמת חשיבה', metrics: 'רמת חשיבה', source: 'נתוני למידה', stage: 1 }
+              { title: 'רמת שליטה ביעד למידה', metrics: 'ידע עולם, ידע קודם רלוונטי', source: 'נתוני למידה' },
+              { title: 'התמודדות עם רמת קושי של שאלה', metrics: '', source: 'נתוני למידה' },
+              { title: 'התמודדות עם רמת חשיבה', metrics: 'רמת חשיבה', source: 'נתוני למידה' }
             ]
           },
           {
@@ -141,86 +125,45 @@
             color: 'from-rose-400 to-rose-600',
             bgSolid: 'bg-rose-500',
             bgColor: 'bg-rose-100',
-            borderColor: 'border-rose-200',
             textColor: 'text-rose-800',
             subDomains: [
-              {
-                id: 'skills_social',
-                title: 'חברתיות-רגשיות',
-                isCategory: true,
-                stage: 2, 
-                children: [
-                  { title: 'מיומנויות חברתיות', metrics: 'תקשורת - העברת מסר, עבודת צוות, מודעות והתנהלות חברתית', source: 'דיווח מורה (DESSA)', stage: 2 },
-                  { title: 'מיומנויות רגשיות', metrics: 'מודעות עצמית, הכוונה עצמית', source: 'דיווח מורה (DESSA)', stage: 2 },
-                  { title: 'מיומנויות תפקודיות', metrics: 'ניהול עצמי, חוסן, גמישות, קבלת החלטות', source: 'דיווח מורה (DESSA)', stage: 2 }
-                ]
-              },
-              {
-                id: 'skills_literacy',
-                title: 'אורייניות',
-                isCategory: true,
-                stage: 2,
-                children: [
-                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות והיסק ממקור בודד/מקורות מרובים, הבעה בכתב, הבעה בעל פה', source: 'נתוני למידה', stage: 2 },
-                  { title: 'חשיבה ביקורתית', metrics: 'טיעון', source: 'נתוני למידה', stage: 2 },
-                  { title: 'חשיבה יצירתית', metrics: 'סקרנות ומקוריות, גמישות מחשבתית, יצירת הקשרים חדשים', source: 'נתוני למידה', stage: 2 },
-                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול ופתרון בעיות, שיתופיות, יצירת תוכן במדיה הדיגיטלית', source: 'נתוני למידה', stage: 2 },
-                  { title: 'אוריינות מידע', metrics: 'איתור מידע, הערכת מידע, ארגון מידע, שימוש במידע, הצגת מידע (כולל מיזוג מידע, השוואה, התמצאות במפה)', source: 'נתוני למידה', stage: 2 }
-                ]
-              },
-              {
-                id: 'skills_disciplinary',
-                title: 'דיסציפלינריות',
-                isCategory: true,
-                stage: 1,
-                children: [
-                  { title: 'מיומנויות דיסציפלינריות', metrics: '(רשימה נפרדת לכל תחום דעת)', source: 'נתוני למידה', stage: 1 }
-                ]
-              },
-              {
-                id: 'skills_meta',
-                title: 'מטא-קוגניטיביות',
-                isCategory: true,
-                stage: 1, 
-                children: [
-                   { title: 'תכנון למידה', metrics: 'תכנון מטרות, תכנון אסטרטגיות, תכנון זמן, תכנון משאבים וסביבת למידה', source: 'יומן למידה / שאלון דיווח עצמי לתלמיד - MSLQ', stage: 2 },
-                   { title: 'ויסות עצמי מטא-קוגניטיבי', metrics: 'תכנון, ניטור ההבנה, ויסות ובקרה של הלמידה, הבהרה ותיקון כשיש אי־הבנה.', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 2 },
-                   { title: 'שימוש באסטרטגיות למידה', metrics: 'למידה שטחית / מעמיקה, שינון, עיבוד, ארגון, חשיבה ביקורתית, חשיבה רפלקטיבית', source: 'נתוני למידה / יומן למידה / שאלון דיווח עצמי לתלמיד - MSLQ, RSPQ-2F', stage: 2 },
-                   { title: 'מודעות לידע', metrics: 'שיפוט למידה, שיפוט הבנה, בטחון בתשובה, תחושת ידע', source: 'JOL, JOU, RCJ, FOK שאלות מסוג', stage: 1 }
-                ]
-              }
+              { title: 'מיומנויות דיסציפלינריות', metrics: 'רשימה נפרדת לכל תחום דעת', source: 'נתוני למידה' },
+              { title: 'מודעות לידע (מטא־קוגניציה)', metrics: 'שיפוט למידה, שיפוט הבנה, בטחון בתשובה, תחושת ידע', source: 'שאלות מסוג JOL, JOU, RCJ, FOK' }
             ]
           },
           {
-            id: 'self_beliefs',
-            title: 'אמונות ביחס לעצמי',
-            icon: <Icons.Target size={24} />,
-            color: 'from-cyan-400 to-cyan-600',
-            bgSolid: 'bg-cyan-500',
-            bgColor: 'bg-cyan-100',
-            borderColor: 'border-cyan-200',
-            textColor: 'text-cyan-800',
+            id: 'agency',
+            title: 'פעלנות',
+            icon: <Icons.Rocket size={24} />,
+            color: 'from-violet-400 to-violet-600',
+            bgSolid: 'bg-violet-500',
+            bgColor: 'bg-violet-100',
+            textColor: 'text-violet-800',
             subDomains: [
-              { title: 'מסוגלות עצמית ללמידה', metrics: '', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
-              { title: 'תודעת צמיחה', metrics: '', source: 'שאלון דיווח עצמי לתלמיד - ITIS-S', stage: 1 }
+              { title: 'מוטיבציה ורלוונטיות', metrics: 'המידה שבה הלומד רואה את הלמידה כמעניינת, משמעותית וקשורה לחייו, ומאמין ביכולתו להצליח בה (מסוגלות עצמית ללמידה)', source: 'שאלון מיפוי 720 — משרד החינוך' },
+              { title: 'תודעת צמיחה', metrics: 'יחס לאתגרים, התמודדות עם קשיים, נכונות להשקיע מאמץ בלמידה, היעדר השוואות לאחרים', source: 'שאלון מיפוי 720 — משרד החינוך' },
+              { title: 'יוזמה ואחריות', metrics: 'רמת המעורבות האקטיבית של הלומד בתהליך הלמידה, יכולת לפעול באופן עצמאי בתוך מסגרת הלמידה', source: 'שאלון מיפוי 720 — משרד החינוך' },
+              { title: 'ויסות עצמי', metrics: 'זיהוי וניהול רגשות בצורה בונה, התמודדות עם תסכול ולחץ, התאוששות ממצבי כישלון', source: 'שאלון מיפוי 720 — משרד החינוך' },
+              { title: 'מודעות עצמית', metrics: 'הערכת התקדמות אישית, זיהוי צרכי למידה של התלמיד, בחירת אסטרטגיות מתאימות', source: 'שאלון מיפוי 720 — משרד החינוך' },
+              { title: 'תמיכה וחוויות רגשיות', metrics: 'תחושת ביטחון ושייכות, רשת התמיכה הזמינה, היכולת לבקש ולקבל עזרה בעת הצורך', source: 'שאלון מיפוי 720 — משרד החינוך' }
             ]
           },
           {
             id: 'social_emotional',
-            title: 'רגשי-חברתי',
+            title: 'רגשי־חברתי',
+            subtitle: 'צרכי עומק',
             icon: <Icons.Heart size={24} />,
             color: 'from-orange-400 to-orange-600',
             bgSolid: 'bg-orange-500',
             bgColor: 'bg-orange-100',
-            borderColor: 'border-orange-200',
             textColor: 'text-orange-800',
             subDomains: [
-              { title: 'צרכי עומק', metrics: 'קשר, שייכות, בטחון, אוטונומיה, בירור מצפן פנימי, תחושת מסוגלות כללית', source: 'שאלוני תצאמ', stage: 1 },
-              { title: 'מוטיבציה', metrics: 'סוג מוטיבציה - פנימית / חיצונית / מתריסה, עוצמת המוטיבציה', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
-              { title: 'הנאה מלמידה', metrics: 'רגש חיובי כלפי הלמידה, עניין באתגור אקדמי (need for cognition), זרימה', source: 'שאלון דיוווח עצמי לתלמיד - PANAS-C, NCS-6', stage: 2 },
-              { title: 'שייכות חברתית', metrics: 'מידת השייכות לקבוצה, מידת השייכות לבית ספר, מעורבות חברתית', source: 'שאלון דיווח עצמי לתלמיד - NOD, PSSM-H, דיווח מורה', stage: 2 },
-              { title: 'רגש', metrics: 'חיוביות-שליליות, אופטימיות, שעמום, בלבול, תסכול', source: 'שאלון דיווח עצמי לתלמיד - PANAS-C', stage: 2 },
-              { title: 'לחץ וחרדה', metrics: 'לחץ, רמת חרדה בלמידה, חרדה מתמטית, חרדת שפה זרה, חרדת בחינות', source: 'שאלוני דיווח עצמי לתלמיד - MAS-12, PHCC TAQ-10 ...', stage: 2 }
+              { title: 'קשר', metrics: 'תחושת קשר משמעותי עם דמויות חינוכיות ועם עמיתים', source: 'שאלוני תצא"מ' },
+              { title: 'שייכות', metrics: 'תחושת שייכות לקבוצה ולמסגרת', source: 'שאלוני תצא"מ' },
+              { title: 'ביטחון', metrics: 'תחושת ביטחון פיזי ורגשי בסביבת הלמידה', source: 'שאלוני תצא"מ' },
+              { title: 'אוטונומיה', metrics: 'תחושת בחירה ושליטה בתהליך הלמידה', source: 'שאלוני תצא"מ' },
+              { title: 'בירור מצפן פנימי', metrics: 'בירור ערכים, כיוון ומשמעות אישית', source: 'שאלוני תצא"מ' },
+              { title: 'תחושת מסוגלות כללית', metrics: 'אמונה כללית ביכולת להתמודד ולהצליח', source: 'שאלוני תצא"מ' }
             ]
           },
           {
@@ -231,14 +174,99 @@
             color: 'from-amber-400 to-amber-600',
             bgSolid: 'bg-amber-500',
             bgColor: 'bg-amber-100',
-            borderColor: 'border-amber-200',
             textColor: 'text-amber-800',
             subDomains: [
-              { title: 'מעורבות בלמידה', metrics: 'השתתפות כוללת בפעילויות למידה, השתתפות בדיונים, תגובה במשימות סינכרוניות וא־סינכרוניות', source: 'נתוני למידה', stage: 1 },
-              { title: 'התמדה', metrics: 'נוכחות, מאמץ ועקביות בהשקעה לאורך זמן, השקעת זמן בתרגול, השקעה בתנאים או זמנים מאתגרים, גריט', source: 'נתוני למידה, שאלון דיווח עצמי לתלמיד - Grit-S', stage: 1 },
-              { title: 'סדירות למידה', metrics: 'זמני למידה, דחיינות', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
-              { title: 'היעזרות', metrics: 'היעזרות, למידת עמיתים, פתיחות למישוב', source: 'שאלון דיווח עצמי לתלמיד - MSLQ', stage: 1 },
-              { title: 'העדפות אישיות בלמידה', metrics: 'העדפה לסוג תוכן, העדפה ללמידה אישית או שיתופית, מישחוק, העשרה', source: 'דיווח עצמי תלמיד', stage: 1 }
+              { title: 'מעורבות בלמידה', metrics: 'השתתפות כוללת בפעילויות למידה, השתתפות בדיונים, תגובה במשימות סינכרוניות וא־סינכרוניות', source: 'נתוני למידה' },
+              { title: 'התמדה', metrics: 'נוכחות, מאמץ ועקביות בהשקעה לאורך זמן, השקעת זמן בתרגול, השקעה בתנאים או זמנים מאתגרים, גריט', source: 'נתוני למידה, שאלון Grit-S' },
+              { title: 'סדירות למידה', metrics: 'זמני למידה, דחיינות', source: 'שאלון MSLQ' },
+              { title: 'היעזרות', metrics: 'היעזרות, למידת עמיתים, פתיחות למישוב', source: 'שאלון MSLQ' },
+              { title: 'העדפות אישיות בלמידה', metrics: 'למידה אישית / שיתופית / עם המורה, לצד קריאה / צפייה / האזנה', source: 'דיווח עצמי תלמיד' }
+            ]
+          }
+        ];
+
+        // --- DATA: FUTURE PROFILE ---
+        const dataFuture = [
+          {
+            id: 'personal_f',
+            title: 'נתונים אישיים',
+            icon: <Icons.User size={24} />,
+            color: 'from-blue-400 to-blue-600',
+            bgSolid: 'bg-blue-500',
+            bgColor: 'bg-blue-100',
+            textColor: 'text-blue-800',
+            subDomains: [
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (הארכת זמן, סיוע בקריאה, סביבה מותאמת)', source: 'נתוני בית ספר' }
+            ]
+          },
+          {
+            id: 'personality',
+            title: 'מאפיינים אישיותיים',
+            icon: <Icons.Sparkles size={24} />,
+            color: 'from-purple-400 to-purple-600',
+            bgSolid: 'bg-purple-500',
+            bgColor: 'bg-purple-100',
+            textColor: 'text-purple-800',
+            subDomains: [
+              { title: 'תכונות אישיות', metrics: 'פתיחות להתנסויות, מוחצנות, נועם הליכות, מצפוניות, יציבות רגשית', source: 'שאלון דיווח עצמי לתלמיד - TIPI' }
+            ]
+          },
+          {
+            id: 'skills_f',
+            title: 'מיומנויות',
+            icon: <Icons.Zap size={24} />,
+            color: 'from-rose-400 to-rose-600',
+            bgSolid: 'bg-rose-500',
+            bgColor: 'bg-rose-100',
+            textColor: 'text-rose-800',
+            subDomains: [
+              {
+                id: 'skills_social',
+                title: 'חברתיות־רגשיות',
+                isCategory: true,
+                children: [
+                  { title: 'מיומנויות חברתיות', metrics: 'תקשורת - העברת מסר, עבודת צוות, מודעות והתנהלות חברתית', source: 'דיווח מורה (DESSA)' },
+                  { title: 'מיומנויות רגשיות', metrics: 'מודעות עצמית, הכוונה עצמית', source: 'דיווח מורה (DESSA)' },
+                  { title: 'מיומנויות תפקודיות', metrics: 'ניהול עצמי, חוסן, גמישות, קבלת החלטות', source: 'דיווח מורה (DESSA)' }
+                ]
+              },
+              {
+                id: 'skills_literacy',
+                title: 'אורייניות',
+                isCategory: true,
+                children: [
+                  { title: 'אוריינות לשונית', metrics: 'איתור מידע, פרשנות והיסק ממקור בודד/מקורות מרובים, הבעה בכתב, הבעה בעל פה', source: 'נתוני למידה' },
+                  { title: 'חשיבה ביקורתית', metrics: 'טיעון', source: 'נתוני למידה' },
+                  { title: 'חשיבה יצירתית', metrics: 'סקרנות ומקוריות, גמישות מחשבתית, יצירת הקשרים חדשים', source: 'נתוני למידה' },
+                  { title: 'אוריינות דיגיטלית', metrics: 'תפעול ופתרון בעיות, שיתופיות, יצירת תוכן במדיה הדיגיטלית', source: 'נתוני למידה' },
+                  { title: 'אוריינות מידע', metrics: 'איתור מידע, הערכת מידע, ארגון מידע, שימוש במידע, הצגת מידע (כולל מיזוג מידע, השוואה, התמצאות במפה)', source: 'נתוני למידה' }
+                ]
+              },
+              {
+                id: 'skills_meta',
+                title: 'מטא־קוגניטיביות',
+                isCategory: true,
+                children: [
+                   { title: 'תכנון למידה', metrics: 'תכנון מטרות, תכנון אסטרטגיות, תכנון זמן, תכנון משאבים וסביבת למידה', source: 'יומן למידה / שאלון MSLQ' },
+                   { title: 'ויסות עצמי מטא־קוגניטיבי', metrics: 'תכנון, ניטור ההבנה, ויסות ובקרה של הלמידה, הבהרה ותיקון כשיש אי־הבנה', source: 'שאלון MSLQ' },
+                   { title: 'שימוש באסטרטגיות למידה', metrics: 'למידה שטחית / מעמיקה, שינון, עיבוד, ארגון, חשיבה ביקורתית, חשיבה רפלקטיבית', source: 'נתוני למידה / יומן למידה / MSLQ, RSPQ-2F' }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'social_emotional_f',
+            title: 'רגשי־חברתי',
+            icon: <Icons.Heart size={24} />,
+            color: 'from-orange-400 to-orange-600',
+            bgSolid: 'bg-orange-500',
+            bgColor: 'bg-orange-100',
+            textColor: 'text-orange-800',
+            subDomains: [
+              { title: 'הנאה מלמידה', metrics: 'רגש חיובי כלפי הלמידה, עניין באתגור אקדמי (need for cognition), זרימה', source: 'שאלוני PANAS-C, NCS-6' },
+              { title: 'שייכות חברתית', metrics: 'מידת השייכות לקבוצה, מידת השייכות לבית ספר, מעורבות חברתית', source: 'שאלוני NOD, PSSM-H, דיווח מורה' },
+              { title: 'רגש', metrics: 'חיוביות־שליליות, אופטימיות, שעמום, בלבול, תסכול', source: 'שאלון PANAS-C' },
+              { title: 'לחץ וחרדה', metrics: 'לחץ, רמת חרדה בלמידה, חרדה מתמטית, חרדת שפה זרה, חרדת בחינות', source: 'שאלוני MAS-12, PHCC TAQ-10' }
             ]
           },
           {
@@ -248,11 +276,35 @@
             color: 'from-indigo-400 to-indigo-600',
             bgSolid: 'bg-indigo-500',
             bgColor: 'bg-indigo-100',
-            borderColor: 'border-indigo-200',
             textColor: 'text-indigo-800',
             subDomains: [
-              { title: 'ערכים', metrics: 'בהירות הערכים, ההזדהות עם הערכים, מימוש הערכים', source: '', stage: 2 },
-              { title: 'זהות אישית', metrics: '', source: '', stage: 2 }
+              { title: 'זהות אישית', metrics: 'גיבוש תחושת זהות ומשמעות אישית', source: 'בהגדרה מול צוות מסע זהות', badge: 'בעבודה' }
+            ]
+          },
+          {
+            id: 'values',
+            title: 'ערכים',
+            icon: <Icons.Gem size={24} />,
+            color: 'from-fuchsia-400 to-fuchsia-600',
+            bgSolid: 'bg-fuchsia-500',
+            bgColor: 'bg-fuchsia-100',
+            textColor: 'text-fuchsia-800',
+            subDomains: [
+              { title: 'בהירות הערכים', metrics: 'עד כמה הלומד יודע לזהות ולנסח את ערכיו', source: 'בהגדרה מול צוות מסע זהות', badge: 'בעבודה' },
+              { title: 'הזדהות עם הערכים', metrics: 'מידת החיבור הפנימי לערכים', source: 'בהגדרה מול צוות מסע זהות', badge: 'בעבודה' },
+              { title: 'מימוש הערכים', metrics: 'ביטוי הערכים בהתנהגות ובבחירות בפועל', source: 'בהגדרה מול צוות מסע זהות', badge: 'בעבודה' }
+            ]
+          },
+          {
+            id: 'strengths',
+            title: 'חוזקות',
+            icon: <Icons.Award size={24} />,
+            color: 'from-lime-400 to-lime-600',
+            bgSolid: 'bg-lime-500',
+            bgColor: 'bg-lime-100',
+            textColor: 'text-lime-800',
+            subDomains: [
+              { title: 'מיפוי חוזקות אישיות', metrics: 'זיהוי וטיפוח חוזקות אופי ויכולות של הלומד', source: 'בהגדרה — פגישה ראשונה נקבעה', badge: 'בעבודה' }
             ]
           },
           {
@@ -262,15 +314,14 @@
             color: 'from-teal-400 to-teal-600',
             bgSolid: 'bg-teal-500',
             bgColor: 'bg-teal-100',
-            borderColor: 'border-teal-200',
             textColor: 'text-teal-800',
             subDomains: [
-              { title: 'קשב וריכוז, היפראקטיביות', metrics: 'רמת קשב, היפראקטיביות', source: '', stage: 2 },
-              { title: 'עיכוב תגובה', metrics: 'עיכוב תגובה', source: '', stage: 2 },
-              { title: 'אינטלגנציה', metrics: 'גורם G (אינטלגנציה כללית), אינטלגנציה רגשית', source: '', stage: 2 },
-              { title: 'זכרון', metrics: 'זכרון עבודה, ידע כללי', source: '', stage: 2 },
-              { title: 'לקויות למידה', metrics: 'דיסלקציה, דיסגרפיה, דיסקלקוליה', source: '', stage: 2 },
-              { title: 'עומס קוגניטיבי', metrics: 'עומס פנימי, עומס חיצוני', source: '', stage: 2 }
+              { title: 'קשב וריכוז, היפראקטיביות', metrics: 'רמת קשב, היפראקטיביות', source: '' },
+              { title: 'עיכוב תגובה', metrics: 'עיכוב תגובה', source: '' },
+              { title: 'אינטליגנציה', metrics: 'גורם G (אינטליגנציה כללית), אינטליגנציה רגשית', source: '' },
+              { title: 'זיכרון', metrics: 'זיכרון עבודה, ידע כללי', source: '' },
+              { title: 'לקויות למידה', metrics: 'דיסלקציה, דיסגרפיה, דיסקלקוליה', source: '' },
+              { title: 'עומס קוגניטיבי', metrics: 'עומס פנימי, עומס חיצוני', source: '' }
             ]
           },
           {
@@ -280,15 +331,14 @@
             color: 'from-slate-500 to-slate-700',
             bgSolid: 'bg-slate-600',
             bgColor: 'bg-slate-200',
-            borderColor: 'border-slate-300',
             textColor: 'text-slate-800',
             subDomains: [
-              { title: 'מקצועות לימוד, מגמות, קבוצות', metrics: '', source: '', stage: 2 },
-              { title: 'תיק תלמיד', metrics: '', source: '', stage: 2 },
-              { title: 'הערות, תעודות', metrics: '', source: '', stage: 2 },
-              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות הניתנות ללומד לצורך למידה מיטבית (כגון: הארכת זמן, סיוע בקריאה, סביבה מותאמת)', source: '', stage: 2 },
-              { title: 'זמן למידה', metrics: 'זמן שהוקדש ללמידה, זמן שהוקדש למשימות, זמן שהוקדש לשיעורי בית, עמידה בזמנים בפועל', source: '', stage: 2 },
-              { title: 'מטרות ויעדים', metrics: 'שאיפות אקדמיות', source: '', stage: 2 }
+              { title: 'מקצועות לימוד, מגמות, קבוצות', metrics: '', source: 'EMS' },
+              { title: 'תיק תלמיד', metrics: '', source: 'EMS' },
+              { title: 'הערות, תעודות', metrics: '', source: 'EMS' },
+              { title: 'התאמות בלמידה', metrics: 'התאמות פדגוגיות או טכנולוגיות (הארכת זמן, סיוע בקריאה, סביבה מותאמת)', source: 'EMS' },
+              { title: 'זמן למידה', metrics: 'זמן שהוקדש ללמידה, למשימות ולשיעורי בית, עמידה בזמנים בפועל', source: 'EMS' },
+              { title: 'מטרות ויעדים', metrics: 'שאיפות אקדמיות', source: 'EMS' }
             ]
           }
         ];
@@ -305,32 +355,6 @@
 
         // --- COMPONENTS ---
 
-        const Controls = ({ activeFilter, onFilterChange, onReset, scale }) => {
-          return (
-            <div className="flex gap-2 items-center">
-              <div className="flex bg-white/90 backdrop-blur p-1 rounded-lg shadow-sm border border-gray-200 gap-1">
-                {[ {l:'הכל',v:0}, {l:'שלב הטמעה ראשוני',v:1} ].map((opt) => (
-                  <button
-                    key={opt.v}
-                    onClick={() => onFilterChange(opt.v)}
-                    className={`px-3 py-1 rounded-md text-xs font-bold transition-all duration-200 ${
-                      activeFilter === opt.v ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-500 hover:bg-gray-100'
-                    }`}
-                  >
-                    {opt.l}
-                  </button>
-                ))}
-              </div>
-              <button onClick={onReset} className="p-1.5 bg-white/90 rounded-lg shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800" title="אפס תצוגה">
-                <Icons.Compass size={18} />
-              </button>
-              <div className="px-2 py-1 bg-white/50 rounded text-[10px] text-gray-400 font-mono">
-                {Math.round(scale * 100)}%
-              </div>
-            </div>
-          );
-        };
-
         const Line = ({ x1, y1, x2, y2, isActive, isDashed = false }) => {
           const dx = x2 - x1;
           const dy = y2 - y1;
@@ -341,38 +365,37 @@
               style={{
                 top: y1, left: x1, width: `${dist}px`, height: isDashed ? '0' : '2px',
                 borderTop: isDashed ? '2px dashed #cbd5e1' : 'none',
-                backgroundColor: isDashed ? 'transparent' : (isActive ? '#94a3b8' : '#e2e8f0'), 
-                transform: `rotate(${angle}deg)`, opacity: isActive ? 1 : 0.6, transition: 'opacity 0.5s' 
+                backgroundColor: isDashed ? 'transparent' : (isActive ? '#94a3b8' : '#e2e8f0'),
+                transform: `rotate(${angle}deg)`, opacity: isActive ? 1 : 0.6, transition: 'opacity 0.5s'
               }}
             />
           );
         };
 
-        const NodeButton = ({ title, metrics, source, colorClass, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false }) => {
-            // If expanded, use fixed large size, otherwise use prop size
-            const currentSize = expanded ? 320 : size; // Expanded size
-            const currentZ = expanded ? 100 : 40; // High Z for expanded
-            
+        const NodeButton = ({ title, metrics, source, badge, textColor, bgSolid, onClick, pos, size, delay, isCategory = false, expanded = false }) => {
+            const currentSize = expanded ? 320 : size;
+            const currentZ = expanded ? 100 : 40;
+
             const style = {
                 '--start-x': `${pos.x}px`, '--start-y': `${pos.y}px`, '--end-x': `${pos.x}px`, '--end-y': `${pos.y}px`,
-                width: currentSize, height: currentSize, left: pos.x, top: pos.y, 
+                width: currentSize, height: currentSize, left: pos.x, top: pos.y,
                 zIndex: currentZ,
                 animationDelay: `${delay}ms`
             };
 
             return (
                 <button onClick={onClick} style={style}
-                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center 
+                    className={`absolute rounded-full shadow-lg border border-gray-200 flex flex-col items-center justify-center
                                 transition-size cursor-pointer
                                 ${expanded ? 'bg-white ring-4 ring-offset-2 ring-blue-100 shadow-2xl' : 'hover:border-blue-400 hover:scale-105 animate-flyOut forwards'}
-                                ${(!expanded && isCategory) ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'} 
+                                ${(!expanded && isCategory) ? 'bg-white ring-2 ring-offset-1 ring-blue-100' : 'bg-white'}
                     `}>
-                    
-                    {/* Content Container - Switch based on expansion */}
+
                     {!expanded ? (
                         <>
                             <span className={`font-bold text-center leading-tight ${textColor} line-clamp-3 px-2`} style={{ fontSize: size * 0.14 }}>{title}</span>
                             <div className={`mt-1 h-0.5 w-3 rounded-full ${bgSolid} opacity-30`}></div>
+                            {badge && <span className="absolute -top-1 text-[8px] font-bold bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-px rounded-full">{badge}</span>}
                             {isCategory && <div className="absolute -bottom-1 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>}
                         </>
                     ) : (
@@ -380,11 +403,12 @@
                             <button className="absolute top-2 left-3 p-2 text-gray-400 hover:text-gray-600 transition-colors" title="סגור">
                                 <Icons.X size={20} />
                             </button>
-                            
+
                             <div className="flex-shrink-0 mb-4 pb-2 border-b-2 border-blue-500 w-2/3">
                                 <h3 className={`text-xl font-bold ${textColor}`}>{title}</h3>
+                                {badge && <span className="inline-block mt-1 text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{badge}</span>}
                             </div>
-                            
+
                             <div className="flex-1 overflow-y-auto custom-scrollbar w-full px-2">
                                 {metrics && (
                                     <div className="mb-4">
@@ -405,6 +429,9 @@
                                         </div>
                                     </div>
                                 )}
+                                {!metrics && !source && (
+                                    <p className="text-gray-400 text-xs italic">טרם הוגדרו מדדים ומקור נתונים</p>
+                                )}
                             </div>
                         </div>
                     )}
@@ -412,7 +439,7 @@
             );
         };
 
-        const PanZoomWrapper = ({ children, contentSize, onResetRef }) => {
+        const PanZoomWrapper = ({ children, onResetRef }) => {
             const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
             const [isDragging, setIsDragging] = useState(false);
             const startPan = useRef({ x: 0, y: 0 });
@@ -423,10 +450,7 @@
             }, [onResetRef]);
 
             const handleMouseDown = (e) => {
-                // Allow dragging on background, but check if we clicked a button
                 if (e.button !== 0) return;
-                // If target is button or inside button, don't drag immediately unless we handle propagation carefully.
-                // Actually, dragging the canvas is fine even if we start on a button, but let's avoid conflict.
                 setIsDragging(true);
                 startPan.current = { x: e.clientX - transform.x, y: e.clientY - transform.y };
             };
@@ -446,7 +470,7 @@
             };
 
             return (
-                <div 
+                <div
                     ref={containerRef}
                     className={`w-full h-full overflow-hidden relative bg-slate-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                     onMouseDown={handleMouseDown}
@@ -455,7 +479,7 @@
                     onMouseLeave={handleMouseUp}
                     onWheel={handleWheel}
                 >
-                    <div 
+                    <div
                         style={{
                             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
                             transformOrigin: 'center',
@@ -470,47 +494,30 @@
         };
 
         const App = () => {
-          const containerRef = useRef(null);
           const resetZoomRef = useRef(null);
           const [dimensions, setDimensions] = useState({ width: 0, height: 0, cx: 0, cy: 0 });
+          const [view, setView] = useState('720');
           const [activeDomainId, setActiveDomainId] = useState(null);
-          const [activeCategoryId, setActiveCategoryId] = useState(null); 
-          const [selectedSubDomainId, setSelectedSubDomainId] = useState(null); // Changed to ID string
-          const [stageFilter, setStageFilter] = useState(0); 
+          const [activeCategoryId, setActiveCategoryId] = useState(null);
+          const [selectedSubDomainId, setSelectedSubDomainId] = useState(null);
 
-          const filteredData = useMemo(() => {
-            return rawData.map(domain => {
-                const visibleSubs = domain.subDomains.filter(sub => {
-                    const selfMatch = stageFilter === 0 || sub.stage === 1;
-                    const childrenMatch = sub.children && sub.children.some(c => stageFilter === 0 || c.stage === 1);
-                    return selfMatch || childrenMatch;
-                }).map(sub => {
-                    if (sub.children) {
-                        return {
-                            ...sub,
-                            children: sub.children.filter(c => stageFilter === 0 || c.stage === 1)
-                        };
-                    }
-                    return sub;
-                });
-                return { ...domain, subDomains: visibleSubs };
-            }).filter(d => d.subDomains.length > 0);
-          }, [stageFilter]);
+          const data = view === '720' ? data720 : dataFuture;
+          const totalItems = useMemo(() => data.reduce((n, d) => n + d.subDomains.reduce((m, s) => m + (s.children ? s.children.length : 1), 0), 0), [data]);
 
           useEffect(() => {
             setActiveDomainId(null);
             setActiveCategoryId(null);
             setSelectedSubDomainId(null);
-            if(resetZoomRef.current) resetZoomRef.current(); 
-          }, [stageFilter]);
+            if (resetZoomRef.current) resetZoomRef.current();
+          }, [view]);
 
           useLayoutEffect(() => {
             const updateDimensions = () => {
-                setDimensions({ 
-                    width: window.innerWidth, 
-                    height: window.innerHeight, 
-                    cx: window.innerWidth / 2, 
-                    cy: window.innerHeight / 2 
+                setDimensions({
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    cx: window.innerWidth / 2,
+                    cy: window.innerHeight / 2
                 });
             };
             window.addEventListener('resize', updateDimensions);
@@ -534,18 +541,16 @@
              if (sub.isCategory) {
                  setActiveCategoryId(activeCategoryId === sub.id ? null : sub.id);
              } else {
-                 // Toggle Expansion: Identify by title since IDs aren't on all subs
-                 const id = sub.title; 
+                 const id = sub.title;
                  setSelectedSubDomainId(selectedSubDomainId === id ? null : id);
              }
           };
 
-          const activeDomainObj = filteredData.find(d => d.id === activeDomainId);
+          const activeDomainObj = data.find(d => d.id === activeDomainId);
 
-          const minDim = Math.min(dimensions.width, dimensions.height);
-          const MAIN_RADIUS = 220; 
-          const SUB_RADIUS_OFFSET = 160; 
-          const LEVEL3_RADIUS_OFFSET = 80; 
+          const MAIN_RADIUS = 220;
+          const SUB_RADIUS_OFFSET = 160;
+          const LEVEL3_RADIUS_OFFSET = 80;
           const CENTER_SIZE = 120;
           const MAIN_NODE_SIZE = 90;
           const SUB_NODE_SIZE = 75;
@@ -553,9 +558,32 @@
 
           return (
             <div className="h-full w-full bg-slate-50 flex flex-col font-sans overflow-hidden text-right" dir="rtl">
-              <header className="bg-white/90 backdrop-blur-sm shadow-sm p-3 z-50 relative border-b border-gray-100 flex-shrink-0 flex items-center justify-between px-6">
-                <h1 className="text-lg font-bold text-gray-800">פרופיל לומד</h1>
-                <Controls activeFilter={stageFilter} onFilterChange={setStageFilter} onReset={() => resetZoomRef.current && resetZoomRef.current()} scale={1} />
+              <header className="bg-white/90 backdrop-blur-sm shadow-sm p-3 z-50 relative border-b border-gray-100 flex-shrink-0 flex flex-wrap items-center justify-between gap-3 px-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center shadow-sm">
+                        <Icons.User size={18} />
+                    </div>
+                    <div>
+                        <h1 className="text-lg font-black text-gray-800 leading-none">פרופיל לומד הוליסטי</h1>
+                        <p className="text-[11px] text-gray-400 mt-0.5">{data.length} תחומים · {totalItems} תתי־תחומים</p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <div className="flex bg-slate-100 rounded-full p-1">
+                        <button onClick={() => setView('720')}
+                            className={`px-5 py-1.5 rounded-full text-sm font-bold transition-all ${view === '720' ? 'bg-white text-slate-800 shadow' : 'text-slate-400 hover:text-slate-600'}`}>
+                            720
+                        </button>
+                        <button onClick={() => setView('future')}
+                            className={`px-5 py-1.5 rounded-full text-sm font-bold transition-all ${view === 'future' ? 'bg-white text-slate-800 shadow' : 'text-slate-400 hover:text-slate-600'}`}>
+                            פרופיל עתידי
+                        </button>
+                    </div>
+                    <button onClick={() => resetZoomRef.current && resetZoomRef.current()} className="p-2 bg-white rounded-full shadow-sm border border-gray-200 text-gray-500 hover:text-gray-800 transition-colors" title="אפס תצוגה">
+                        <Icons.Compass size={16} />
+                    </button>
+                </div>
               </header>
 
               <main className="flex-1 relative overflow-hidden w-full h-full">
@@ -569,16 +597,20 @@
                        </div>
                     </div>
 
+                    {/* Decorative orbit ring */}
+                    <div className="absolute rounded-full border border-dashed border-slate-200/80 pointer-events-none"
+                        style={{ width: MAIN_RADIUS * 2, height: MAIN_RADIUS * 2, left: dimensions.cx, top: dimensions.cy, transform: 'translate(-50%, -50%)' }}></div>
+
                     <div className="absolute z-20 flex flex-col items-center justify-center rounded-full shadow-2xl bg-white border-4 border-slate-50 text-slate-800 cursor-pointer hover:shadow-xl transition-all duration-300"
                       style={{ width: CENTER_SIZE, height: CENTER_SIZE, left: dimensions.cx, top: dimensions.cy, transform: 'translate(-50%, -50%)' }}
                       onClick={(e) => { e.stopPropagation(); setActiveDomainId(null); }}>
                        <Icons.User size={32} className="text-slate-400 mb-1 opacity-50"/>
                        <h2 className="font-extrabold text-center leading-none text-sm">פרופיל<br/>לומד</h2>
-                       {stageFilter !== 0 && <span className="text-[10px] mt-1 bg-gray-100 text-gray-500 px-2 rounded-full">שלב 1</span>}
+                       <span className="text-[10px] mt-1 bg-slate-100 text-slate-500 px-2 rounded-full font-bold">{view === '720' ? '720' : 'עתידי'}</span>
                     </div>
 
-                    {filteredData.map((domain, i) => {
-                      const angleDeg = (360 / filteredData.length) * i - 90;
+                    {data.map((domain, i) => {
+                      const angleDeg = (360 / data.length) * i - 90;
                       const pos = calculatePosition(angleDeg, MAIN_RADIUS, dimensions.cx, dimensions.cy);
                       const isActive = activeDomainId === domain.id;
                       const isDimmed = activeDomainId && !isActive;
@@ -586,9 +618,9 @@
                       return (
                         <React.Fragment key={domain.id}>
                           <Line x1={dimensions.cx} y1={dimensions.cy} x2={pos.x} y2={pos.y} isActive={isActive} />
-                          
+
                           <button onClick={(e) => { e.stopPropagation(); handleDomainClick(domain.id); }}
-                            className={`absolute rounded-full shadow-md flex flex-col items-center justify-center text-center 
+                            className={`absolute rounded-full shadow-md flex flex-col items-center justify-center text-center
                               transition-all duration-500 z-30 border-2 border-white group outline-none
                               bg-gradient-to-br ${domain.color} text-white
                               ${isActive ? 'scale-110 ring-4 ring-offset-2 ring-blue-50' : 'hover:scale-105'}
@@ -600,7 +632,7 @@
 
                           {isActive && domain.subDomains.map((sub, j) => {
                             const subCount = domain.subDomains.length;
-                            const spread = 80; 
+                            const spread = 80;
                             const startAngle = angleDeg - (spread / 2);
                             const step = subCount > 1 ? spread / (subCount - 1) : 0;
                             const subAngle = subCount === 1 ? angleDeg : startAngle + (step * j);
@@ -611,16 +643,16 @@
                             return (
                               <React.Fragment key={sub.title + j}>
                                 <Line x1={pos.x} y1={pos.y} x2={subPos.x} y2={subPos.y} isActive={true} isDashed={true} />
-                                <NodeButton 
-                                    title={sub.title} 
+                                <NodeButton
+                                    title={sub.title}
                                     metrics={sub.metrics}
                                     source={sub.source}
-                                    colorClass={domain.color} 
-                                    textColor={domain.textColor} 
+                                    badge={sub.badge}
+                                    textColor={domain.textColor}
                                     bgSolid={domain.bgSolid}
                                     onClick={(e) => { e.stopPropagation(); handleSubClick(sub); }}
-                                    pos={subPos} 
-                                    size={SUB_NODE_SIZE} 
+                                    pos={subPos}
+                                    size={SUB_NODE_SIZE}
                                     delay={j * 50}
                                     isCategory={sub.isCategory}
                                     expanded={isExpanded}
@@ -628,7 +660,7 @@
 
                                 {sub.isCategory && isCatActive && sub.children && sub.children.map((child, k) => {
                                     const childCount = sub.children.length;
-                                    const childSpread = 70; 
+                                    const childSpread = 70;
                                     const childStartAngle = subAngle - (childSpread / 2);
                                     const childStep = childCount > 1 ? childSpread / (childCount - 1) : 0;
                                     const childAngle = childCount === 1 ? subAngle : childStartAngle + (childStep * k);
@@ -638,11 +670,11 @@
                                     return (
                                         <React.Fragment key={child.title + k}>
                                             <Line x1={subPos.x} y1={subPos.y} x2={childPos.x} y2={childPos.y} isActive={true} isDashed={true} />
-                                            <NodeButton 
+                                            <NodeButton
                                                 title={child.title}
                                                 metrics={child.metrics}
                                                 source={child.source}
-                                                colorClass={domain.color}
+                                                badge={child.badge}
                                                 textColor={domain.textColor}
                                                 bgSolid={domain.bgSolid}
                                                 onClick={(e) => { e.stopPropagation(); handleSubClick(child); }}
